@@ -1,6 +1,5 @@
 package com.example.myapplication_test
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,28 +15,30 @@ import com.example.myapplication_test.ui.theme.MyApplication_testTheme
 import com.example.myapplication_test.utils.loadJson
 import com.example.myapplication_test.utils.parseJson
 import com.example.myapplication_test.utils.readJsonFile
+import com.example.myapplication_test.utils.saveJson
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 object GlobalVariables{
-    var userCount: Int = 0
-    var reviewCount: Int = 0
-    var userId: Int = -1
-    var
+    var userID: Int = -1
+    var userList: MutableList<UserData> = mutableListOf()
+    var reviewList: MutableList<ReviewData> = mutableListOf()
+    var placeList: List<PlaceData> = listOf()
+    var contactList: List<ContactData> = listOf()
+    var testImg: String = ""
 }
+
 @Serializable
 data class UserData(
     val id: Int,
     val username: String,
     val password: String,
     val nationality: String,
-    val profile: String, // Base64
+    var profile: String, // Base64
     val follower: List<Int>, // Sorted
     val following: List<Int>, // Sorted
     val recommend: List<Int>, // Sorted
     val reviews: List<Int>, // Unsorted
-    val placeList: List<Int>, // Unsorted
+    val myPlaceList: List<Int>, // Unsorted
 )
 
 @Serializable
@@ -47,7 +48,8 @@ data class ReviewData(
     val recommend: Int,
     val rating: Int,
     val place: Int,
-    val Image: String, // Base64
+    var image: String, // Base64
+    val text: String,
 )
 
 @Serializable
@@ -59,14 +61,16 @@ data class PlaceData(
     val lon: Float,
     val imageRoot: String,
     val ratingAvg: Float,
+    val contacts: List<Int>,
 )
 
 @Serializable
 data class ContactData(
-    val title: String,
-    val color: String,
-    val dialogContent: String,
-    val phoneNumber: String,
+    val id: Int,
+    val name: String,
+    val text: String,
+    val imageRoot: String,
+    val tel: String,
     val website: String
 )
 
@@ -74,18 +78,13 @@ data class ContactData(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val ReviewData = parseJson<ReviewData>(this,"review.json").toMutableList()
-        val tempBitmap = this.readJsonFile("test1_img.txt")
-        val defalultUserData:List<UserData> = parseJson(this, "users.json")
-        val userData:List<UserData> = loadJson(this,"users.json")
-        val users = (userData+defalultUserData).toMutableList()
-        val imgData:List<ContactData> = parseJson(this, "contact.json")
-        for(item in ReviewData){
-            if(item.image=="null"){
-                item.image = tempBitmap
-            }
-        }
-
+        // 리스트 데이터 다 불러오기
+        GlobalVariables.reviewList = loadJson<ReviewData>(this,"review.json").toMutableList()
+        GlobalVariables.userList= loadJson<UserData>(this,"users.json").toMutableList()
+        GlobalVariables.contactList =  parseJson(this, "contact.json")
+        GlobalVariables.placeList = parseJson(this, "place.json")
+        GlobalVariables.testImg = this.readJsonFile("test1_img.txt")
+        // 불러오기 종료
         setContent {
             MyApplication_testTheme {
                 var isLoggedIn by remember { mutableStateOf(false) }
@@ -95,30 +94,23 @@ class MainActivity : ComponentActivity() {
                 ) {
                     if (isLoggedIn) {
                         // 로그인 성공 후 탭 화면 표시
-                        TabLayout(
-                            context = this,
-                            imgData,
-                            ReviewData
-                        )
+                        TabLayout(context = this)
                     } else {
                         // 로그인 화면 표시
                         LoginScreen(
-                            data = users,
-                            onLoginSuccess = { isLoggedIn = true },
-                            onSignUp = { username, password ->
-                                users.add(UserData(username, password))
-                                saveJson(this, "users.json", users)
+                            onLoginSuccess = {ret ->
+                                isLoggedIn = true
+                                GlobalVariables.userID = ret
+                            },
+                            onSignUp = { username, password,nationality  ->
+                                GlobalVariables.userList.add(UserData(GlobalVariables.userList.size,username, password, nationality, "null",
+                                    listOf(), listOf(), listOf(), listOf(), listOf()))
+                                saveJson(this, "users.json", GlobalVariables.userList)
                             }
                         )
                     }
                 }
             }
-        }
-    }
-    private fun saveJson(context: Context, fileName: String, data: List<UserData>) {
-        val jsonString = Json.encodeToString(data)
-        context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
-            it.write(jsonString.toByteArray())
         }
     }
 }

@@ -27,17 +27,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.myapplication_test.ContactData
+import com.example.myapplication_test.GlobalVariables
 
 // JSON 데이터를 기반으로 박스를 렌더링하는 화면
 @Composable
-fun HomeScreen(data: List<ContactData>) {
+fun HomeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(rememberScrollState()) // 스크롤 가능
     ) {
-        data.forEach { contactData ->
+        GlobalVariables.contactList.forEach { contactData ->
             BoxWithDialog(contactData = contactData) // contactData 객체를 전달
         }
     }
@@ -52,18 +53,18 @@ fun BoxWithDialog(contactData: ContactData) {
             .fillMaxWidth()
             .height(80.dp)
             .padding(bottom = 10.dp)
-            .background(Color(android.graphics.Color.parseColor(contactData.color)))
+            .background(MaterialTheme.colorScheme.primary)
             .clickable { showDialog = true } // 클릭 시 다이얼로그 표시
     ) {
         // 박스에 제목 및 전화번호 표시
         Column(modifier = Modifier.padding(15.dp)) {
             Text(
-                text = contactData.title,
+                text = contactData.name,
                 color = Color.White,
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(
-                text = "Tel: ${contactData.phoneNumber}",
+                text = "Tel: ${contactData.tel}",
                 color = Color.White,
                 style = MaterialTheme.typography.bodySmall
             )
@@ -74,10 +75,10 @@ fun BoxWithDialog(contactData: ContactData) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false }, // 다이얼로그 외부를 클릭하면 닫힘
-            title = { Text(contactData.title) }, // 다이얼로그 제목
+            title = { Text(contactData.name) }, // 다이얼로그 제목
             text = {
                 Column {
-                    Text(contactData.dialogContent) // 다이얼로그 내용 표시
+                    Text(contactData.text) // 다이얼로그 내용 표시
                     Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -85,7 +86,7 @@ fun BoxWithDialog(contactData: ContactData) {
                     ) {
                         // 전화번호
                         Text(
-                            text = "Tel: ${contactData.phoneNumber}",
+                            text = "Tel: ${contactData.tel}",
                             modifier = Modifier.weight(1f),
                             style = MaterialTheme.typography.bodyMedium
                         )
@@ -94,7 +95,7 @@ fun BoxWithDialog(contactData: ContactData) {
                             // 다이얼 앱으로 연결
                             val intent = android.content.Intent(
                                 android.content.Intent.ACTION_DIAL,
-                                android.net.Uri.parse("tel:${contactData.phoneNumber}")
+                                android.net.Uri.parse("tel:${contactData.tel}")
                             )
                             context.startActivity(intent) // 다이얼 앱 실행
                         }) {

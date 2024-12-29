@@ -1,0 +1,32 @@
+[
+  {
+    "id": 0,
+    "name": "해운대",
+    "address": "부산광역시 해운대구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "contacts": [1, 2, 3]
+  },
+  {
+    "id": 1,
+    "name": "카이스트",
+    "address": "대전광역시 어딘가",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "contacts": [2, 3]
+  },
+  {
+    "id": 2,
+    "name": "부산대",
+    "address": "부산광역시 금정구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "contacts": [1, 3]
+  }
+]
