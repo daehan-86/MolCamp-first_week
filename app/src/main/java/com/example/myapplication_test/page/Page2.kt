@@ -22,11 +22,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,15 +42,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.myapplication_test.reviewData
+import com.example.myapplication_test.GlobalVariables
+import com.example.myapplication_test.ReviewData
 import com.example.myapplication_test.utils.decodeImageFromJsonString
 import com.example.myapplication_test.utils.getLocalImage
 import com.example.myapplication_test.utils.handleBitmapToBase64
 
+
 // 사진 및 각자 객체
 @Composable
-fun ReviewGrid(context: Context, locationList: MutableList<reviewData>) {
-    var selectedLocation by remember { mutableStateOf<reviewData?>(null) } // 선택된 이미지 상태
+fun ReviewGrid(context: Context) {
+    var selectedLocation by remember { mutableStateOf<ReviewData?>(null) } // 선택된 이미지 상태
     var writeReviewMode by remember{ mutableStateOf(false) }
     var ImageReturnState by remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -59,7 +63,7 @@ fun ReviewGrid(context: Context, locationList: MutableList<reviewData>) {
                 onUpload={
                     ret->
                         ImageReturnState=true
-                        locationList.add(ret)
+                        GlobalVariables.reviewList.add(ret)
                 }
             )
             if(ImageReturnState){
@@ -77,7 +81,7 @@ fun ReviewGrid(context: Context, locationList: MutableList<reviewData>) {
                 horizontalArrangement = Arrangement.spacedBy(1.dp),
                 verticalArrangement = Arrangement.spacedBy(1.dp)
             ) {
-                items(locationList) { location ->
+                items(GlobalVariables.reviewList) { location ->
                     ReviewItem(
                         data = location,
                         onItemClick = { selectedLocation = it } // 클릭 시 이미지 선택
@@ -112,16 +116,15 @@ fun ReviewGrid(context: Context, locationList: MutableList<reviewData>) {
 }
 
 @Composable
-fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (reviewData) -> Unit) {
+fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) -> Unit) {
     val (imageUri, launcher) = getLocalImage()
     var retBase64 = "null"
 
     // 상태 저장
-    var city by remember { mutableStateOf("") }
-    var district by remember { mutableStateOf("") }
-    var neighborhood by remember { mutableStateOf("") }
-    var placeName by remember { mutableStateOf("") }
+    var selectPlace by remember { mutableStateOf(0) }
+    var selectText by remember { mutableStateOf("") }
     var satisfaction by remember { mutableStateOf(5) }
+    var expanded by remember { mutableStateOf(false) }
 
     // 스크롤 상태
     val scrollState = rememberScrollState()
@@ -170,41 +173,32 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (reviewData) ->
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
-                // 시
-                TextField(
-                    value = city,
-                    onValueChange = { city = it },
-                    label = { Text("시") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // 구
-                TextField(
-                    value = district,
-                    onValueChange = { district = it },
-                    label = { Text("구") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // 동
-                TextField(
-                    value = neighborhood,
-                    onValueChange = { neighborhood = it },
-                    label = { Text("동") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
                 // 장소 이름
-
-
-                TextField(
-                    value = placeName,
-                    onValueChange = { placeName = it },
-                    label = { Text("장소 이름") },
-                    modifier = Modifier.fillMaxWidth()
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    GlobalVariables.placeList.forEach { item ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectPlace = item.id
+                                expanded = false
+                            },
+                            text = {Text(text = item.name)}
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedTextField(
+                    value = selectText,
+                    onValueChange = { selectText = it },
+                    label = { Text("후기글") },
+                    placeholder = { Text("후기를 작성해주세요...") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    maxLines = 10,
+                    singleLine = false // 다중 줄 입력 활성화
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -231,16 +225,15 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (reviewData) ->
                         }
 
                         onUpload(
-                            reviewData(
-                            image=retBase64,
-                            city = city,
-                            district = district,
-                            neighborhood = neighborhood,
-                            name = placeName,
-                            rating = satisfaction,
-                            recommend = 0,
-                            reviewId = 111
-                        )
+                            ReviewData(
+                                id= GlobalVariables.reviewList.size,
+                                owner = GlobalVariables.userID,
+                                image=retBase64,
+                                rating = satisfaction,
+                                recommend = 0,
+                                place = selectPlace,
+                                text = selectText
+                            )
                         )
                     }
                 },
@@ -269,15 +262,8 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (reviewData) ->
         }
     }
 }
-
-
 @Composable
-fun ReviewItem(data: reviewData, onItemClick: (reviewData) -> Unit) {
-//    val imageResId = LocalContext.current.resources.getIdentifier(
-//        data.image,
-//        "drawable",
-//        LocalContext.current.packageName
-//    )
+fun ReviewItem(data: ReviewData, onItemClick: (ReviewData) -> Unit) {
     Image(
         bitmap = decodeImageFromJsonString(data.image).asImageBitmap(),
         contentDescription = "Sample Image",
@@ -291,7 +277,7 @@ fun ReviewItem(data: reviewData, onItemClick: (reviewData) -> Unit) {
 
 
 @Composable
-fun ExpandedReview(data: reviewData, onClose: () -> Unit) {
+fun ExpandedReview(data: ReviewData, onClose: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -310,9 +296,7 @@ fun ExpandedReview(data: reviewData, onClose: () -> Unit) {
                     .aspectRatio(1f) // 정사각형
                     .padding(10.dp)
             )
-            Text(text = "시(군): ${data.city}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "구(면): ${data.district}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "동(리): ${data.neighborhood}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "${data.text}", style = MaterialTheme.typography.bodyMedium)
             Text(text = "별점: ${data.rating}", style = MaterialTheme.typography.bodyMedium)
             Text(text = "추천 수: ${data.recommend}", style = MaterialTheme.typography.bodyMedium)
         }

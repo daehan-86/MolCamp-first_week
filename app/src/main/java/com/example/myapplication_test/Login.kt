@@ -26,10 +26,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun LoginScreen(
-    data: MutableList<userData>,
-    onLoginSuccess: () -> Unit,
-    onSignUp: (String, String) -> Unit
-) {
+    onLoginSuccess: (Int) -> Unit,
+    onSignUp: (String, String, String) -> Unit
+){
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
@@ -72,9 +71,9 @@ fun LoginScreen(
 
             Button(onClick = {
                 // 로그인 검증
-                val user = data.find { it.username == username && it.password == password }
+                val user = GlobalVariables.userList.find { it.username == username && it.password == password }
                 if (user != null) {
-                    onLoginSuccess() // 로그인 성공
+                    onLoginSuccess(user.id) // 로그인 성공
                 } else {
 
                     errorMessage = "$username  $password" // 에러 메시지
@@ -96,8 +95,8 @@ fun LoginScreen(
         if (showSignUpDialog) {
             SignUpDialog(
                 onDismiss = { showSignUpDialog = false },
-                onSignUp = { newUsername, newPassword ->
-                    onSignUp(newUsername, newPassword)
+                onSignUp = { newUsername, newPassword, newNationality ->
+                    onSignUp(newUsername, newPassword, newNationality)
                     showSignUpDialog = false
                 }
             )
@@ -107,10 +106,11 @@ fun LoginScreen(
 @Composable
 fun SignUpDialog(
     onDismiss: () -> Unit,
-    onSignUp: (String, String) -> Unit
+    onSignUp: (String, String, String) -> Unit
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var nationality by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
     AlertDialog(
@@ -134,6 +134,14 @@ fun SignUpDialog(
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
                 )
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedTextField(
+                    value = nationality,
+                    onValueChange = { nationality = it },
+                    label = { Text("Nationality") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
                 if (errorMessage.isNotEmpty()) {
                     Text(errorMessage, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
                 }
@@ -142,7 +150,7 @@ fun SignUpDialog(
         confirmButton = {
             Button(onClick = {
                 if (username.isNotEmpty() && password.isNotEmpty()) {
-                    onSignUp(username, password)
+                    onSignUp(username, password, nationality)
                 } else {
                     errorMessage = "All fields are required"
                 }

@@ -1,79 +1,74 @@
 [
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 0,
+    "name": "한국관광공사",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 1,
+    "name": "한국관광공사1",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 2,
+    "name": "한국관광공사2",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 3,
+    "name": "한국관광공사3",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 4,
+    "name": "한국관광공사4",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 5,
+    "name": "한국관광공사5",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 6,
+    "name": "한국관광공사6",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 7,
+    "name": "한국관광공사7",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
-  },
-  {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
-  },
-  {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 8,
+    "name": "한국관광공사8",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   }
 ]
