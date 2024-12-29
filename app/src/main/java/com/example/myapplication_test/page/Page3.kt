@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.myapplication_test.GlobalVariables
@@ -284,30 +284,40 @@ fun ProfileHeader() {
 // 하이라이트 영역
 @Composable
 fun BadgeSection() {
-
-    LazyRow(
+    val data = GlobalVariables.userList[GlobalVariables.userID].badges
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(5) { index ->
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(
-                    modifier = Modifier
-                        .size(70.dp)
-                        .background(Color.LightGray, shape = CircleShape)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "뱃지",
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+        data.forEach { item ->
+            BadgeItem(index = item)
         }
     }
 
     Spacer(modifier = Modifier.height(16.dp))
+}
+@Composable
+fun BadgeItem(index:Int){
+    val context = LocalContext.current // Context 가져오기
+    val resourceId = context.resources.getIdentifier(GlobalVariables.badgeList[index].imageRoot, "drawable", context.packageName)
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Image(
+            painter = painterResource(id = resourceId),
+            contentDescription = "Image from ${GlobalVariables.badgeList[index].name}",
+            contentScale = ContentScale.Crop, // 이미지가 꽉 차도록 크롭
+            modifier = Modifier
+                .size(70.dp)
+                .clip(CircleShape)
+                .border(2.dp,Color.Black, CircleShape)
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = GlobalVariables.badgeList[index].name,
+            style = MaterialTheme.typography.bodySmall
+        )
+    }
 }
 
 // 탭 영역
