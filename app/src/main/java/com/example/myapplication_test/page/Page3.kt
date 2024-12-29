@@ -284,6 +284,7 @@ fun ProfileHeader() {
 // 하이라이트 영역
 @Composable
 fun BadgeSection() {
+
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -313,7 +314,7 @@ fun BadgeSection() {
 @Composable
 fun TabSection() {
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("클릭 1", "클릭 2", "클릭 3")
+    val tabs = listOf("내 후기", "여행 갈곳")
 
     Column {
         // 탭 버튼
