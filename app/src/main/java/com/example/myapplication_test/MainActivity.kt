@@ -20,27 +20,49 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-
+object GlobalVariables{
+    var userCount: Int = 0
+    var reviewCount: Int = 0
+    var userId: Int = -1
+    var
+}
 @Serializable
-data class userData(
+data class UserData(
+    val id: Int,
     val username: String,
-    val password: String
+    val password: String,
+    val nationality: String,
+    val profile: String, // Base64
+    val follower: List<Int>, // Sorted
+    val following: List<Int>, // Sorted
+    val recommend: List<Int>, // Sorted
+    val reviews: List<Int>, // Unsorted
+    val placeList: List<Int>, // Unsorted
 )
 
 @Serializable
-data class reviewData(
-    val reviewId : Int,
-    val city: String,
-    val district: String,
-    val neighborhood: String,
-    val name: String,
-    val rating: Int,
+data class ReviewData(
+    val id: Int,
+    val owner: Int,
     val recommend: Int,
-    var image: String,
+    val rating: Int,
+    val place: Int,
+    val Image: String, // Base64
 )
 
 @Serializable
-data class contactData(
+data class PlaceData(
+    val id: Int,
+    val name: String,
+    val address: String,
+    val lat: Float,
+    val lon: Float,
+    val imageRoot: String,
+    val ratingAvg: Float,
+)
+
+@Serializable
+data class ContactData(
     val title: String,
     val color: String,
     val dialogContent: String,
@@ -52,13 +74,13 @@ data class contactData(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val reviewDatas = parseJson<reviewData>(this,"review.json").toMutableList()
+        val ReviewData = parseJson<ReviewData>(this,"review.json").toMutableList()
         val tempBitmap = this.readJsonFile("test1_img.txt")
-        val defalultUserData:List<userData> = parseJson(this, "users.json")
-        val userData:List<userData> = loadJson(this,"users.json")
+        val defalultUserData:List<UserData> = parseJson(this, "users.json")
+        val userData:List<UserData> = loadJson(this,"users.json")
         val users = (userData+defalultUserData).toMutableList()
-        val imgData:List<contactData> = parseJson(this, "contact.json")
-        for(item in reviewDatas){
+        val imgData:List<ContactData> = parseJson(this, "contact.json")
+        for(item in ReviewData){
             if(item.image=="null"){
                 item.image = tempBitmap
             }
@@ -76,7 +98,7 @@ class MainActivity : ComponentActivity() {
                         TabLayout(
                             context = this,
                             imgData,
-                            reviewDatas
+                            ReviewData
                         )
                     } else {
                         // 로그인 화면 표시
@@ -84,7 +106,7 @@ class MainActivity : ComponentActivity() {
                             data = users,
                             onLoginSuccess = { isLoggedIn = true },
                             onSignUp = { username, password ->
-                                users.add(userData(username, password))
+                                users.add(UserData(username, password))
                                 saveJson(this, "users.json", users)
                             }
                         )
@@ -93,7 +115,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    private fun saveJson(context: Context, fileName: String, data: List<userData>) {
+    private fun saveJson(context: Context, fileName: String, data: List<UserData>) {
         val jsonString = Json.encodeToString(data)
         context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
             it.write(jsonString.toByteArray())

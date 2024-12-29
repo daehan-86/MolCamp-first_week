@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun LoginScreen(
-    data: MutableList<userData>,
+    data: MutableList<UserData>,
     onLoginSuccess: () -> Unit,
     onSignUp: (String, String) -> Unit
 ) {

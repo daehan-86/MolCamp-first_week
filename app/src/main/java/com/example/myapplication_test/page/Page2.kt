@@ -40,7 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.myapplication_test.reviewData
+import com.example.myapplication_test.ReviewData
 import com.example.myapplication_test.utils.decodeImageFromJsonString
 import com.example.myapplication_test.utils.getLocalImage
 import com.example.myapplication_test.utils.handleBitmapToBase64
@@ -49,8 +49,8 @@ import com.example.myapplication_test.utils.handleBitmapToBase64
 
 // 사진 및 각자 객체
 @Composable
-fun ReviewGrid(context: Context, locationList: MutableList<reviewData>) {
-    var selectedLocation by remember { mutableStateOf<reviewData?>(null) } // 선택된 이미지 상태
+fun ReviewGrid(context: Context, locationList: MutableList<ReviewData>) {
+    var selectedLocation by remember { mutableStateOf<ReviewData?>(null) } // 선택된 이미지 상태
     var writeReviewMode by remember{ mutableStateOf(false) }
     var ImageReturnState by remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -114,7 +114,7 @@ fun ReviewGrid(context: Context, locationList: MutableList<reviewData>) {
 }
 
 @Composable
-fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (reviewData) -> Unit) {
+fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) -> Unit) {
     val (imageUri, launcher) = getLocalImage()
     var retBase64 = "null"
 
@@ -233,7 +233,7 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (reviewData) ->
                         }
 
                         onUpload(
-                            reviewData(
+                            ReviewData(
                             image=retBase64,
                             city = city,
                             district = district,
@@ -271,10 +271,8 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (reviewData) ->
         }
     }
 }
-
-
 @Composable
-fun ReviewItem(data: reviewData, onItemClick: (reviewData) -> Unit) {
+fun ReviewItem(data: ReviewData, onItemClick: (ReviewData) -> Unit) {
 //    val imageResId = LocalContext.current.resources.getIdentifier(
 //        data.image,
 //        "drawable",
@@ -293,7 +291,7 @@ fun ReviewItem(data: reviewData, onItemClick: (reviewData) -> Unit) {
 
 
 @Composable
-fun ExpandedReview(data: reviewData, onClose: () -> Unit) {
+fun ExpandedReview(data: ReviewData, onClose: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()

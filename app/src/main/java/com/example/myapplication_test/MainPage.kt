@@ -21,7 +21,7 @@ import com.example.myapplication_test.page.SettingsScreen
 
 
 @Composable
-fun TabLayout(context: Context, contactDatas: List<contactData>, reviewDatas: MutableList<reviewData>) {
+fun TabLayout(context: Context, ContactDatas: List<ContactData>, ReviewDatas: MutableList<ReviewData>) {
     // 탭 상태 저장
     var selectedTabIndex by remember { mutableStateOf(0) }
 
@@ -51,8 +51,8 @@ fun TabLayout(context: Context, contactDatas: List<contactData>, reviewDatas: Mu
         ) {
             // 탭에 따라 화면 변경
             when (selectedTabIndex) {
-                0 -> HomeScreen(contactDatas)
-                1 -> ReviewGrid(context,reviewDatas)
+                0 -> HomeScreen(ContactDatas)
+                1 -> ReviewGrid(context,ReviewDatas)
                 2 -> SettingsScreen()
             }
         }

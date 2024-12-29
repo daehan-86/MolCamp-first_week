@@ -26,11 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.myapplication_test.contactData
+import com.example.myapplication_test.ContactData
 
 // JSON 데이터를 기반으로 박스를 렌더링하는 화면
 @Composable
-fun HomeScreen(data: List<contactData>) {
+fun HomeScreen(data: List<ContactData>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -43,7 +43,7 @@ fun HomeScreen(data: List<contactData>) {
     }
 }
 @Composable
-fun BoxWithDialog(contactData: contactData) {
+fun BoxWithDialog(contactData: ContactData) {
     val context = LocalContext.current // Context 가져오기
     var showDialog by remember { mutableStateOf(false) } // 다이얼로그 표시 여부 상태 관리
 

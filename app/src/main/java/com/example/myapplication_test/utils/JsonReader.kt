@@ -1,7 +1,7 @@
 package com.example.myapplication_test.utils
 
 import android.content.Context
-import com.example.myapplication_test.userData
+import com.example.myapplication_test.UserData
 import kotlinx.serialization.json.Json
 
 
@@ -10,7 +10,7 @@ inline fun <reified T>parseJson(context: Context, fileName: String): List<T>{
     val jsonString = context.readJsonFile(fileName)
     return Json.decodeFromString(jsonString)
 }
-fun loadJson(context: Context, fileName: String): List<userData> {
+fun loadJson(context: Context, fileName: String): List<UserData> {
     return try {
         val jsonString = context.openFileInput(fileName).bufferedReader().use { it.readText() }
         Json.decodeFromString(jsonString)
