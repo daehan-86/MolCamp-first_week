@@ -45,6 +45,8 @@ import com.example.myapplication_test.utils.decodeImageFromJsonString
 import com.example.myapplication_test.utils.getLocalImage
 import com.example.myapplication_test.utils.handleBitmapToBase64
 
+
+
 // 사진 및 각자 객체
 @Composable
 fun ReviewGrid(context: Context, locationList: MutableList<reviewData>) {
