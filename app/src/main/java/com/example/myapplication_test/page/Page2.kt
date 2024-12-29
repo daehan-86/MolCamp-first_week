@@ -46,7 +46,6 @@ import com.example.myapplication_test.utils.getLocalImage
 import com.example.myapplication_test.utils.handleBitmapToBase64
 
 // 사진 및 각자 객체
-//@SuppressLint("UnrememberedMutableInteractionSource") asdasd
 @Composable
 fun ReviewGrid(context: Context, locationList: MutableList<reviewData>) {
     var selectedLocation by remember { mutableStateOf<reviewData?>(null) } // 선택된 이미지 상태
