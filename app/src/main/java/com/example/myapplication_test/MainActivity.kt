@@ -24,21 +24,23 @@ object GlobalVariables{
     var reviewList: MutableList<ReviewData> = mutableListOf()
     var placeList: List<PlaceData> = listOf()
     var contactList: List<ContactData> = listOf()
+    var badgeList: List<BadgeData> = listOf()
     var testImg: String = ""
 }
 
 @Serializable
 data class UserData(
     val id: Int,
-    val username: String,
+    var username: String,
+    val userid: String,
     val password: String,
-    val nationality: String,
+    var nationality: String,
     var profile: String, // Base64
-    val follower: List<Int>, // Sorted
-    val following: List<Int>, // Sorted
-    val recommend: List<Int>, // Sorted
-    val reviews: List<Int>, // Unsorted
-    val myPlaceList: List<Int>, // Unsorted
+    val follower: MutableList<Int>, // Sorted
+    val following: MutableList<Int>, // Sorted
+    val recommend: MutableList<Int>, // Sorted
+    val reviews: MutableList<Int>, // Unsorted
+    val myPlaceList: MutableList<Int>, // Unsorted
 )
 
 @Serializable
@@ -71,7 +73,15 @@ data class ContactData(
     val text: String,
     val imageRoot: String,
     val tel: String,
-    val website: String
+    val website: String,
+)
+
+@Serializable
+data class BadgeData(
+    val id: Int,
+    val name: String,
+    val text: String,
+    val imageRoot: String,
 )
 
 
@@ -83,6 +93,7 @@ class MainActivity : ComponentActivity() {
         GlobalVariables.userList= loadJson<UserData>(this,"users.json").toMutableList()
         GlobalVariables.contactList =  parseJson(this, "contact.json")
         GlobalVariables.placeList = parseJson(this, "place.json")
+        GlobalVariables.badgeList = parseJson(this, "badge.json")
         GlobalVariables.testImg = this.readJsonFile("test1_img.txt")
         // 불러오기 종료
         setContent {
@@ -102,9 +113,22 @@ class MainActivity : ComponentActivity() {
                                 isLoggedIn = true
                                 GlobalVariables.userID = ret
                             },
-                            onSignUp = { username, password,nationality  ->
-                                GlobalVariables.userList.add(UserData(GlobalVariables.userList.size,username, password, nationality, "null",
-                                    listOf(), listOf(), listOf(), listOf(), listOf()))
+                            onSignUp = { userid, password,nationality  ->
+                                GlobalVariables.userList.add(
+                                    UserData(
+                                        GlobalVariables.userList.size,
+                                        "사용자${GlobalVariables.userList.size}",
+                                        userid,
+                                        password,
+                                        nationality,
+                                        GlobalVariables.testImg,
+                                        mutableListOf(),
+                                        mutableListOf(),
+                                        mutableListOf(),
+                                        mutableListOf(),
+                                        mutableListOf()
+                                    )
+                                )
                                 saveJson(this, "users.json", GlobalVariables.userList)
                             }
                         )

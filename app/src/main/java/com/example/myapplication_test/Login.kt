@@ -29,7 +29,7 @@ fun LoginScreen(
     onLoginSuccess: (Int) -> Unit,
     onSignUp: (String, String, String) -> Unit
 ){
-    var username by remember { mutableStateOf("") }
+    var userid by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
     var showSignUpDialog by remember { mutableStateOf(false) }
@@ -49,8 +49,8 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
+                value = userid,
+                onValueChange = { userid = it },
                 label = { Text("Username") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
@@ -71,12 +71,12 @@ fun LoginScreen(
 
             Button(onClick = {
                 // 로그인 검증
-                val user = GlobalVariables.userList.find { it.username == username && it.password == password }
+                val user = GlobalVariables.userList.find { it.userid == userid && it.password == password }
                 if (user != null) {
                     onLoginSuccess(user.id) // 로그인 성공
                 } else {
 
-                    errorMessage = "$username  $password" // 에러 메시지
+                    errorMessage = "$userid  $password" // 에러 메시지
                 }
             }, modifier = Modifier.fillMaxWidth()) {
                 Text("Login")
@@ -95,8 +95,8 @@ fun LoginScreen(
         if (showSignUpDialog) {
             SignUpDialog(
                 onDismiss = { showSignUpDialog = false },
-                onSignUp = { newUsername, newPassword, newNationality ->
-                    onSignUp(newUsername, newPassword, newNationality)
+                onSignUp = { newUserid, newPassword, newNationality ->
+                    onSignUp(newUserid, newPassword, newNationality)
                     showSignUpDialog = false
                 }
             )
@@ -108,7 +108,7 @@ fun SignUpDialog(
     onDismiss: () -> Unit,
     onSignUp: (String, String, String) -> Unit
 ) {
-    var username by remember { mutableStateOf("") }
+    var userid by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var nationality by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
@@ -119,8 +119,8 @@ fun SignUpDialog(
         text = {
             Column {
                 OutlinedTextField(
-                    value = username,
-                    onValueChange = { username = it },
+                    value = userid,
+                    onValueChange = { userid = it },
                     label = { Text("Username") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
@@ -149,8 +149,8 @@ fun SignUpDialog(
         },
         confirmButton = {
             Button(onClick = {
-                if (username.isNotEmpty() && password.isNotEmpty()) {
-                    onSignUp(username, password, nationality)
+                if (userid.isNotEmpty() && password.isNotEmpty()) {
+                    onSignUp(userid, password, nationality)
                 } else {
                     errorMessage = "All fields are required"
                 }

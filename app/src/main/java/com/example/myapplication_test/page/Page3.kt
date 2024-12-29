@@ -1,6 +1,8 @@
 package com.example.myapplication_test.page
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -30,9 +33,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-
+import coil.compose.rememberAsyncImagePainter
+import com.example.myapplication_test.GlobalVariables
+import com.example.myapplication_test.utils.decodeImageFromJsonString
+import com.example.myapplication_test.utils.getLocalImage
+import com.example.myapplication_test.utils.handleBitmapToBase64
+import com.example.myapplication_test.utils.saveJson
 
 
 // 간단한 설정 화면
@@ -58,7 +70,11 @@ fun SettingsScreen() {
 @Composable
 fun ProfileHeader() {
     var showDialog by remember { mutableStateOf(false) } // 다이얼로그 상태 변수
-
+    val data = GlobalVariables.userList[GlobalVariables.userID]
+    var reviewRecommendCnt = 0
+    for(o in data.reviews){
+        reviewRecommendCnt+=GlobalVariables.reviewList[o].recommend
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -75,16 +91,22 @@ fun ProfileHeader() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f)
             ) {
-                Box(
+                Image(
+                    bitmap = decodeImageFromJsonString(data.profile).asImageBitmap(),
+                    contentDescription = "Sample Image",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(100.dp)
-                        .background(Color.Gray, shape = CircleShape)
+                        .fillMaxWidth()
+                        .width(100.dp)
+                        .height(100.dp)
+                        .border(3.dp,Color.Black, CircleShape)
+                        .clip(CircleShape)
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "이서진",
+                    text = data.username,
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -105,7 +127,7 @@ fun ProfileHeader() {
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "대한민국",
+                            text = data.nationality,
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
                         )
@@ -116,7 +138,7 @@ fun ProfileHeader() {
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "402",
+                            text = data.follower.size.toString(),
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
                         )
@@ -136,7 +158,7 @@ fun ProfileHeader() {
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "497",
+                            text = data.following.size.toString(),
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
                         )
@@ -147,7 +169,7 @@ fun ProfileHeader() {
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "1500",
+                            text = reviewRecommendCnt.toString(),
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
                         )
@@ -168,14 +190,24 @@ fun ProfileHeader() {
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Button(onClick = { showDialog = true }) { // 다이얼로그 표시 상태를 true로 설정
-                Text("프로필 편집")
+            Row {
+                Button(onClick = { showDialog = true }) { // 다이얼로그 표시 상태를 true로 설정
+                    Text("프로필 편집")
+                }
+                Spacer(modifier = Modifier.width(20.dp))
+                Button(onClick = {  }) { // 다이얼로그 표시 상태를 true로 설정
+                    Text("로그아웃")
+                }
             }
         }
     }
-
+    var tempname by remember { mutableStateOf(data.username) }
+    var tempnation by remember { mutableStateOf(data.nationality) }
+    val context = LocalContext.current // Context 가져오기
     // 다이얼로그 UI
     if (showDialog) {
+        val (imageUri, launcher) = getLocalImage()
+
         AlertDialog(
             onDismissRequest = { showDialog = false }, // 다이얼로그 외부 클릭 시 닫힘
             title = { Text("프로필 편집") }, // 다이얼로그 제목
@@ -183,17 +215,41 @@ fun ProfileHeader() {
                 Column {
                     Text("프로필 정보를 수정하세요.")
                     Spacer(modifier = Modifier.height(16.dp))
+                    Box {
+                        Button(
+                            onClick = { launcher.launch("image/*") },
+                            shape = RoundedCornerShape(0.dp), // 네모난 버튼
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(100.dp)
+                                .clip(CircleShape)
+                        ) {
+                            Text("이미지 업로드")
+                        }
+                        imageUri?.let { uri ->
+                            Image(
+                                painter = rememberAsyncImagePainter(uri),
+                                contentDescription = "Uploaded Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .width(100.dp)
+                                    .height(100.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
                     // 예: 사용자 이름 입력 필드
                     OutlinedTextField(
-                        value = "이서진",
-                        onValueChange = { /* 이름 변경 로직 추가 */ },
+                        value = tempname,
+                        onValueChange = { tempname = it },
                         label = { Text("이름") }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     // 국적 변경
                     OutlinedTextField(
-                        value = "대한민국",
-                        onValueChange = { /* 국적 변경 로직 추가 */ },
+                        value = tempnation,
+                        onValueChange = { tempnation = it },
                         label = { Text("국적") }
                     )
                 }
@@ -202,6 +258,12 @@ fun ProfileHeader() {
                 Button(onClick = {
                     // 저장 로직 추가
                     showDialog = false // 다이얼로그 닫기
+                    data.username = tempname
+                    data.nationality = tempnation
+                    imageUri?.let { uri ->
+                        data.profile = handleBitmapToBase64(context, uri)
+                    }
+                    saveJson(context = context,"users.json",GlobalVariables.userList)
                 }) {
                     Text("저장")
                 }
@@ -212,6 +274,9 @@ fun ProfileHeader() {
                 }
             }
         )
+    }else{
+        tempname=data.username
+        tempnation=data.nationality
     }
 }
 
