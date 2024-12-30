@@ -7,8 +7,12 @@ color purple_700
 color teal_200
 color teal_700
 color white
+drawable facebook_img
 drawable ic_launcher_background
 drawable ic_launcher_foreground
+drawable kakao_img
+drawable login_img
+drawable naver_img
 drawable test1_img
 drawable test2_img
 drawable test3_img

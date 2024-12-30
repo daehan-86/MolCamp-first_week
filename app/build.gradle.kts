@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.io.coil.kt)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.ui) // Compose UI 코어
+    implementation(libs.ui.tooling.preview) // UI 프리뷰
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
