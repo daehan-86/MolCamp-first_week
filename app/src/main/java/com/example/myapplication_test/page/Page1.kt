@@ -35,7 +35,7 @@ fun HomeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(0.dp)
             .verticalScroll(rememberScrollState()) // 스크롤 가능
     ) {
         GlobalVariables.contactList.forEach { contactData ->
@@ -52,8 +52,8 @@ fun BoxWithDialog(contactData: ContactData) {
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
-            .padding(bottom = 10.dp)
-            .background(MaterialTheme.colorScheme.primary)
+            .padding(bottom = 0.dp)
+            .background(Color(0xFF43A047)) // Box 배경색 설정
             .clickable { showDialog = true } // 클릭 시 다이얼로그 표시
     ) {
         // 박스에 제목 및 전화번호 표시
@@ -77,7 +77,11 @@ fun BoxWithDialog(contactData: ContactData) {
             onDismissRequest = { showDialog = false }, // 다이얼로그 외부를 클릭하면 닫힘
             title = { Text(contactData.name) }, // 다이얼로그 제목
             text = {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .background(Color(0xFFC8E6C9)) // 다이얼로그 배경색 설정
+                        .padding(16.dp)
+                ) {
                     Text(contactData.text) // 다이얼로그 내용 표시
                     Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
                     Row(
@@ -120,7 +124,8 @@ fun BoxWithDialog(contactData: ContactData) {
                 Button(onClick = { showDialog = false }) { // 확인 버튼 클릭 시 닫기
                     Text("Close")
                 }
-            }
+            },
+            containerColor = Color(0xFFC8E6C9) // 다이얼로그 배경색 설정
         )
     }
 }
