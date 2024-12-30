@@ -1,7 +1,6 @@
 package com.example.myapplication_test.page
 
 import android.content.Context
-import android.view.LayoutInflater
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,13 +41,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import coil.compose.rememberAsyncImagePainter
 import com.example.myapplication_test.GlobalVariables
-import com.example.myapplication_test.R
-import com.example.myapplication_test.ReviewAdapter
 import com.example.myapplication_test.ReviewData
 import com.example.myapplication_test.utils.decodeImageFromJsonString
 import com.example.myapplication_test.utils.getLocalImage
@@ -83,19 +77,19 @@ fun ReviewGrid(context: Context) {
         }
         else if (selectedLocation == null) {
             // 기본 그리드
-            AndroidView(
-                factory = { inflater ->
-                    LayoutInflater.from(inflater).inflate(R.layout.recycler_view_layout, null) as RecyclerView
-                },
-                modifier = Modifier.fillMaxSize(),
-                update = { recyclerView ->
-                    recyclerView.layoutManager = GridLayoutManager(context, 3) // 3열 그리드
-                    recyclerView.adapter = ReviewAdapter(
-                        (0 until GlobalVariables.reviewList.size).toMutableList() ?: mutableListOf(),
-                        onItemClick = { selectedLocation = it }
-                    )
-                }
-            )
+//            AndroidView(
+//                factory = { inflater ->
+//                    LayoutInflater.from(inflater).inflate(R.layout.recycler_view_layout, null) as RecyclerView
+//                },
+//                modifier = Modifier.fillMaxSize(),
+//                update = { recyclerView ->
+//                    recyclerView.layoutManager = GridLayoutManager(context, 3) // 3열 그리드
+//                    recyclerView.adapter = ReviewAdapter(
+//                        (0 until GlobalVariables.reviewList.size).toMutableList() ?: mutableListOf(),
+//                        onItemClick = { selectedLocation = it }
+//                    )
+//                }
+//            )
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 modifier = Modifier
@@ -138,12 +132,13 @@ fun ReviewGrid(context: Context) {
             }
         }
     }
+    Text(text = "${GlobalVariables.reviewList.size}")
 }
 
 @Composable
 fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) -> Unit) {
     val (imageUri, launcher) = getLocalImage()
-    var retBase64 = "null"
+    var retUri = "null"
 
     // 상태 저장
     var selectPlace by remember { mutableStateOf(0) }

@@ -195,7 +195,7 @@ fun ProfileHeader() {
                     Text("프로필 편집")
                 }
                 Spacer(modifier = Modifier.width(20.dp))
-                Button(onClick = {  }) { // 다이얼로그 표시 상태를 true로 설정
+                Button(onClick = { /*logoutfunc()*/  }) { // 다이얼로그 표시 상태를 true로 설정
                     Text("로그아웃")
                 }
             }

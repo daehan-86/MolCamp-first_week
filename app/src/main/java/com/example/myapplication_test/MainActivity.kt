@@ -35,7 +35,7 @@ data class UserData(
     val userid: String,
     val password: String,
     var nationality: String,
-    var profile: String, // Base64
+    var profile: String, // uri
     val follower: MutableList<Int>, // Sorted
     val following: MutableList<Int>, // Sorted
     val recommend: MutableList<Int>, // Sorted
@@ -51,7 +51,7 @@ data class ReviewData(
     val recommend: Int,
     val rating: Int,
     val place: Int,
-    var image: String, // Base64
+    var image: String, // uri
     val text: String,
 )
 

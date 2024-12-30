@@ -75,7 +75,7 @@ fun handleBitmapToBase64(context: Context, uri: Uri): String {
 // Bitmap 이미지를 Base64 문자열로 변환하는 함수
 fun bitmapToBase64(bitmap: Bitmap, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG): String {
     val outputStream = ByteArrayOutputStream()
-    bitmap.compress(format, 100, outputStream) // 지정된 포맷으로 압축
+    bitmap.compress(format, 30, outputStream) // 지정된 포맷으로 압축
     val byteArray = outputStream.toByteArray()
     return Base64.encodeToString(byteArray, Base64.DEFAULT)
 }
