@@ -1,10 +1,10 @@
 package com.example.myapplication_test.page
 
 import android.content.Context
+import android.net.Uri
+import android.view.LayoutInflater
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,9 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -31,23 +28,30 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.myapplication_test.GlobalVariables
+import com.example.myapplication_test.R
+import com.example.myapplication_test.ReviewAdapter
 import com.example.myapplication_test.ReviewData
-import com.example.myapplication_test.utils.decodeImageFromJsonString
+import com.example.myapplication_test.utils.copyUriToInternalStorage
 import com.example.myapplication_test.utils.getLocalImage
-import com.example.myapplication_test.utils.handleBitmapToBase64
 import com.example.myapplication_test.utils.saveJson
+import java.io.File
 
 
 // 사진 및 각자 객체
@@ -77,34 +81,34 @@ fun ReviewGrid(context: Context) {
         }
         else if (selectedLocation == null) {
             // 기본 그리드
-//            AndroidView(
-//                factory = { inflater ->
-//                    LayoutInflater.from(inflater).inflate(R.layout.recycler_view_layout, null) as RecyclerView
-//                },
-//                modifier = Modifier.fillMaxSize(),
-//                update = { recyclerView ->
-//                    recyclerView.layoutManager = GridLayoutManager(context, 3) // 3열 그리드
-//                    recyclerView.adapter = ReviewAdapter(
-//                        (0 until GlobalVariables.reviewList.size).toMutableList() ?: mutableListOf(),
-//                        onItemClick = { selectedLocation = it }
-//                    )
-//                }
-//            )
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black),
-                horizontalArrangement = Arrangement.spacedBy(1.dp),
-                verticalArrangement = Arrangement.spacedBy(1.dp)
-            ) {
-                items(GlobalVariables.reviewList) { location ->
-                    ReviewItem(
-                        data = location,
-                        onItemClick = { selectedLocation = it } // 클릭 시 이미지 선택
+            AndroidView(
+                factory = { inflater ->
+                    LayoutInflater.from(inflater).inflate(R.layout.recycler_view_layout, null) as RecyclerView
+                },
+                modifier = Modifier.fillMaxSize(),
+                update = { recyclerView ->
+                    recyclerView.layoutManager = GridLayoutManager(context, 3) // 3열 그리드
+                    recyclerView.adapter = ReviewAdapter(
+                        (0 until GlobalVariables.reviewList.size).toMutableList() ?: mutableListOf(),
+                        onItemClick = { selectedLocation = it }
                     )
                 }
-            }
+            )
+//            LazyVerticalGrid(
+//                columns = GridCells.Fixed(3),
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .background(Color.Black),
+//                horizontalArrangement = Arrangement.spacedBy(1.dp),
+//                verticalArrangement = Arrangement.spacedBy(1.dp)
+//            ) {
+//                items(GlobalVariables.reviewList) { location ->
+//                    ReviewItem(
+//                        data = location,
+//                        onItemClick = { selectedLocation = it } // 클릭 시 이미지 선택
+//                    )
+//                }
+//            }
             TextButton(
                 onClick = {
                     writeReviewMode=true
@@ -138,7 +142,6 @@ fun ReviewGrid(context: Context) {
 @Composable
 fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) -> Unit) {
     val (imageUri, launcher) = getLocalImage()
-    var retUri = "null"
 
     // 상태 저장
     var selectPlace by remember { mutableStateOf(0) }
@@ -242,16 +245,11 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
             Button(
                 onClick = {
                     imageUri?.let { uri ->
-                        val bitmapData = handleBitmapToBase64(context, uri)
-                        if (bitmapData != "") {
-                            retBase64 = bitmapData
-                        }
-
                         onUpload(
                             ReviewData(
                                 id= GlobalVariables.reviewList.size,
                                 owner = GlobalVariables.userID,
-                                image=retBase64,
+                                image=copyUriToInternalStorage(context,uri,"review${GlobalVariables.reviewList.size}.jpg"),
                                 rating = satisfaction,
                                 recommend = 0,
                                 place = selectPlace,
@@ -285,22 +283,32 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
         }
     }
 }
-@Composable
-fun ReviewItem(data: ReviewData, onItemClick: (ReviewData) -> Unit) {
-    Image(
-        bitmap = decodeImageFromJsonString(data.image).asImageBitmap(),
-        contentDescription = "Sample Image",
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f) // 정사각형
-            .clickable { onItemClick(data) } // 클릭 이벤트 전달
-    )
-}
+//@Composable
+//fun ReviewItem(data: ReviewData, onItemClick: (ReviewData) -> Unit) {
+//
+//    Image(
+//        painter = // 이미지 전환 애니메이션
+//        rememberAsyncImagePainter(
+//            ImageRequest.Builder(LocalContext.current).data(data = Uri.fromFile(File(data.image)))
+//                .apply(block = fun ImageRequest.Builder.() {
+//                    crossfade(true) // 이미지 전환 애니메이션
+//                }).build()
+//        ),
+//        contentDescription = "Sample Image",
+//        contentScale = ContentScale.Crop,
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .aspectRatio(1f) // 정사각형
+//            .clickable { onItemClick(data) } // 클릭 이벤트 전달
+//    )
+//}
 
 
 @Composable
 fun ExpandedReview(data: ReviewData, onClose: () -> Unit) {
+    val userdata = GlobalVariables.userList[GlobalVariables.userID]
+    var isRecommend by remember { mutableStateOf(userdata.recommend.contains(data.id)) }
+    var recommendCount by remember { mutableIntStateOf(data.recommend) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -311,7 +319,13 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit) {
             modifier = Modifier.fillMaxSize()
         ){
             Image(
-                bitmap = decodeImageFromJsonString(data.image).asImageBitmap(),
+                painter = // 이미지 전환 애니메이션
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current).data(data = Uri.fromFile(File(data.image)))
+                        .apply(block = fun ImageRequest.Builder.() {
+                            crossfade(true) // 이미지 전환 애니메이션
+                        }).build()
+                ),
                 contentDescription = "Expanded Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -319,9 +333,27 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit) {
                     .aspectRatio(1f) // 정사각형
                     .padding(10.dp)
             )
+            TextButton(
+                onClick = {
+                    isRecommend=!isRecommend
+                    if(isRecommend){
+                        userdata.recommend.add(data.id)
+                        data.recommend+=1
+                        recommendCount+=1
+                    }
+                    else{
+                        userdata.recommend.remove(data.id)
+                        data.recommend-=1
+                        recommendCount-=1
+                    }
+                }
+            ) {
+                if(isRecommend) Text(text = "♥", color = Color.Red)
+                else Text(text = "♡",color = Color.Black)
+            }
             Text(text = "${data.text}", style = MaterialTheme.typography.bodyMedium)
             Text(text = "별점: ${data.rating}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "추천 수: ${data.recommend}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "추천 수: $recommendCount", style = MaterialTheme.typography.bodyMedium)
             Text(text = "작성자: ${data.owner}", style = MaterialTheme.typography.bodyMedium)
         }
         // 닫기 버튼

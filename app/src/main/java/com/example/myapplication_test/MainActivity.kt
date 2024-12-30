@@ -1,6 +1,8 @@
 package com.example.myapplication_test
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,13 +10,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.myapplication_test.ui.theme.MyApplication_testTheme
 import com.example.myapplication_test.utils.loadJson
 import com.example.myapplication_test.utils.parseJson
-import com.example.myapplication_test.utils.readJsonFile
+import com.example.myapplication_test.utils.saveDrawableToInternalStorage
 import com.example.myapplication_test.utils.saveJson
 import kotlinx.serialization.Serializable
 
@@ -26,6 +27,7 @@ object GlobalVariables{
     var contactList: List<ContactData> = listOf()
     var badgeList: List<BadgeData> = listOf()
     var testImg: String = ""
+    var userSession by mutableStateOf(false)
 }
 
 @Serializable
@@ -48,7 +50,7 @@ data class UserData(
 data class ReviewData(
     val id: Int,
     val owner: Int,
-    val recommend: Int,
+    var recommend: Int,
     val rating: Int,
     val place: Int,
     var image: String, // uri
@@ -87,6 +89,16 @@ data class BadgeData(
 
 
 class MainActivity : ComponentActivity() {
+    private val handler = Handler(Looper.getMainLooper())
+    private val runnable = object : Runnable {
+        override fun run() {
+            handler.postDelayed(this, 1000L)
+            // 여기에 실행할 작업 작성
+            saveJson(context = this@MainActivity,"users.json",GlobalVariables.userList)
+
+            // 5초 후 다시 실행
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 리스트 데이터 다 불러오기
@@ -95,23 +107,24 @@ class MainActivity : ComponentActivity() {
         GlobalVariables.contactList =  parseJson(this, "contact.json")
         GlobalVariables.placeList = parseJson(this, "place.json")
         GlobalVariables.badgeList = parseJson(this, "badge.json")
-        GlobalVariables.testImg = this.readJsonFile("test1_img.txt")
+        GlobalVariables.testImg = saveDrawableToInternalStorage(this,R.drawable.test1_img,"testImg.jpg")
+
+        handler.post(runnable)
         // 불러오기 종료
         setContent {
             MyApplication_testTheme {
-                var isLoggedIn by remember { mutableStateOf(false) }
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (isLoggedIn) {
+                    if (GlobalVariables.userSession) {
                         // 로그인 성공 후 탭 화면 표시
                         TabLayout(context = this)
                     } else {
                         // 로그인 화면 표시
                         LoginScreen(
                             onLoginSuccess = {ret ->
-                                isLoggedIn = true
+                                GlobalVariables.userSession = true
                                 GlobalVariables.userID = ret
                             },
                             onSignUp = { userid, password,nationality  ->
@@ -138,5 +151,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Activity가 파괴되면 핸들러 중지
+        handler.removeCallbacks(runnable)
     }
 }

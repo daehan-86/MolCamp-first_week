@@ -1,6 +1,7 @@
 package com.example.myapplication_test.page
 
 import android.content.Context
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -33,18 +34,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.myapplication_test.GlobalVariables
 import com.example.myapplication_test.ui.TabSection
-import com.example.myapplication_test.utils.decodeImageFromJsonString
+import com.example.myapplication_test.utils.copyUriToInternalStorage
 import com.example.myapplication_test.utils.getLocalImage
-import com.example.myapplication_test.utils.handleBitmapToBase64
 import com.example.myapplication_test.utils.saveJson
+import java.io.File
 
 
 // 간단한 설정 화면
@@ -92,7 +93,15 @@ fun ProfileHeader() {
                 modifier = Modifier.weight(1f)
             ) {
                 Image(
-                    bitmap = decodeImageFromJsonString(data.profile).asImageBitmap(),
+                    painter = // 이미지 전환 애니메이션
+                    rememberAsyncImagePainter(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(data = Uri.fromFile(File(data.profile)))
+                            .apply(block = fun ImageRequest.Builder.() {
+                                crossfade(true) // 이미지 전환 애니메이션
+                            })
+                            .build()
+                    ),
                     contentDescription = "Sample Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -195,7 +204,7 @@ fun ProfileHeader() {
                     Text("프로필 편집")
                 }
                 Spacer(modifier = Modifier.width(20.dp))
-                Button(onClick = { /*logoutfunc()*/  }) { // 다이얼로그 표시 상태를 true로 설정
+                Button(onClick = { GlobalVariables.userSession = false  }) { // 다이얼로그 표시 상태를 true로 설정
                     Text("로그아웃")
                 }
             }
@@ -261,7 +270,7 @@ fun ProfileHeader() {
                     data.username = tempname
                     data.nationality = tempnation
                     imageUri?.let { uri ->
-                        data.profile = handleBitmapToBase64(context, uri)
+                        data.profile = copyUriToInternalStorage(context,uri,"profile${GlobalVariables.userID}.jpg")
                     }
                     saveJson(context = context,"users.json",GlobalVariables.userList)
                 }) {
