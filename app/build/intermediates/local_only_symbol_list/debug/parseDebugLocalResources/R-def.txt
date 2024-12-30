@@ -12,9 +12,13 @@ drawable ic_launcher_foreground
 drawable test1_img
 drawable test2_img
 drawable test3_img
+id compose_view
 id myButton
 id myTextView
+id recycler_view
 layout activity_main
+layout item_review
+layout recycler_view_layout
 mipmap ic_launcher
 mipmap ic_launcher_round
 string app_name

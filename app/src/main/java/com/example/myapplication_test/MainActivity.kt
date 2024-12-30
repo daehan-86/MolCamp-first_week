@@ -39,6 +39,7 @@ data class UserData(
     val follower: MutableList<Int>, // Sorted
     val following: MutableList<Int>, // Sorted
     val recommend: MutableList<Int>, // Sorted
+    val badges: MutableList<Int>, // Sorted
     val reviews: MutableList<Int>, // Unsorted
     val myPlaceList: MutableList<Int>, // Unsorted
 )
@@ -125,6 +126,7 @@ class MainActivity : ComponentActivity() {
                                         mutableListOf(),
                                         mutableListOf(),
                                         mutableListOf(),
+                                        mutableListOf(0,1,2),
                                         mutableListOf(),
                                         mutableListOf()
                                     )

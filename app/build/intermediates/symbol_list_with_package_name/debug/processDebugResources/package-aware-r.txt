@@ -7,6 +7,11 @@ attr dataPattern
 attr destination
 attr enterAnim
 attr exitAnim
+attr fastScrollEnabled
+attr fastScrollHorizontalThumbDrawable
+attr fastScrollHorizontalTrackDrawable
+attr fastScrollVerticalThumbDrawable
+attr fastScrollVerticalTrackDrawable
 attr font
 attr fontProviderAuthority
 attr fontProviderCerts
@@ -21,6 +26,7 @@ attr fontWeight
 attr graph
 attr lStar
 attr launchSingleTop
+attr layoutManager
 attr mimeType
 attr navGraph
 attr nestedScrollViewStyle
@@ -31,9 +37,13 @@ attr popUpTo
 attr popUpToInclusive
 attr popUpToSaveState
 attr queryPatterns
+attr recyclerViewStyle
 attr restoreState
+attr reverseLayout
 attr route
 attr shortcutMatchRequired
+attr spanCount
+attr stackFromEnd
 attr startDestination
 attr targetPackage
 attr ttcIndex
@@ -60,6 +70,12 @@ dimen compat_button_padding_vertical_material
 dimen compat_control_corner_material
 dimen compat_notification_large_icon_max_height
 dimen compat_notification_large_icon_max_width
+dimen fastscroll_default_thickness
+dimen fastscroll_margin
+dimen fastscroll_minimum_range
+dimen item_touch_helper_max_drag_scroll_per_frame
+dimen item_touch_helper_swipe_escape_max_velocity
+dimen item_touch_helper_swipe_escape_velocity
 dimen notification_action_icon_size
 dimen notification_action_text_size
 dimen notification_big_circle_margin
@@ -144,6 +160,7 @@ id async
 id blocking
 id chronometer
 id coil_request_manager
+id compose_view
 id compose_view_saveable_id_tag
 id consume_window_insets_tag
 id dialog_button
@@ -158,6 +175,7 @@ id info
 id inspection_slot_table_set
 id is_pooling_container_tag
 id italic
+id item_touch_helper_previous_elevation
 id line1
 id line3
 id myButton
@@ -168,6 +186,7 @@ id notification_background
 id notification_main_column
 id notification_main_column_container
 id pooling_container_listener_holder_tag
+id recycler_view
 id report_drawn
 id right_icon
 id right_side
@@ -198,12 +217,14 @@ layout activity_main
 layout custom_dialog
 layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
+layout item_review
 layout notification_action
 layout notification_action_tombstone
 layout notification_template_custom_big
 layout notification_template_icon_group
 layout notification_template_part_chronometer
 layout notification_template_part_time
+layout recycler_view_layout
 mipmap ic_launcher
 mipmap ic_launcher_round
 string androidx_startup
@@ -320,6 +341,7 @@ styleable NavGraphNavigator startDestination
 styleable NavHost navGraph
 styleable NavInclude graph
 styleable Navigator android_label android_id route
+styleable RecyclerView android_orientation android_clipToPadding android_descendantFocusability fastScrollEnabled fastScrollHorizontalThumbDrawable fastScrollHorizontalTrackDrawable fastScrollVerticalThumbDrawable fastScrollVerticalTrackDrawable layoutManager reverseLayout spanCount stackFromEnd
 styleable StateListDrawable android_dither android_visible android_variablePadding android_constantSize android_enterFadeDuration android_exitFadeDuration
 styleable StateListDrawableItem android_drawable
 xml backup_rules

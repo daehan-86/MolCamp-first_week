@@ -1,7 +1,6 @@
 package com.example.myapplication_test.utils
 
 import android.content.Context
-import com.example.myapplication_test.UserData
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -25,7 +24,7 @@ fun Context.readJsonFile(fileName: String): String {
     return assets.open(fileName).bufferedReader().use { it.readText() }
 }
 
-fun saveJson(context: Context, fileName: String, data: List<UserData>) {
+inline fun <reified T>saveJson(context: Context, fileName: String, data: List<T>) {
     val jsonString = Json.encodeToString(data)
     context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
         it.write(jsonString.toByteArray())

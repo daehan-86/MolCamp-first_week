@@ -3,18 +3,18 @@
     "id": 0,
     "name": "부잘알",
     "text": "부산을 대표하는 곳을 잘 앎",
-    "imageRoot": ""
+    "imageRoot": "test2_img"
   },
   {
     "id": 1,
     "name": "서잘알",
     "text": "서울을 대표하는 곳을 잘 앎",
-    "imageRoot": ""
+    "imageRoot": "test3_img"
   },
   {
     "id": 2,
     "name": "대잘알",
     "text": "대전을 대표하는 곳을 잘 앎",
-    "imageRoot": ""
+    "imageRoot": "test1_img"
   }
 ]

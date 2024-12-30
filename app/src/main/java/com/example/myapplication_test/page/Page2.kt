@@ -1,6 +1,7 @@
 package com.example.myapplication_test.page
 
 import android.content.Context
+import android.view.LayoutInflater
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,12 +42,18 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import coil.compose.rememberAsyncImagePainter
 import com.example.myapplication_test.GlobalVariables
+import com.example.myapplication_test.R
+import com.example.myapplication_test.ReviewAdapter
 import com.example.myapplication_test.ReviewData
 import com.example.myapplication_test.utils.decodeImageFromJsonString
 import com.example.myapplication_test.utils.getLocalImage
 import com.example.myapplication_test.utils.handleBitmapToBase64
+import com.example.myapplication_test.utils.saveJson
 
 
 // 사진 및 각자 객체
@@ -62,8 +69,11 @@ fun ReviewGrid(context: Context) {
                 onClose = { writeReviewMode = false },
                 onUpload={
                     ret->
-                        ImageReturnState=true
-                        GlobalVariables.reviewList.add(ret)
+                    ImageReturnState=true
+                    GlobalVariables.userList[GlobalVariables.userID].reviews.add(ret.id)
+                    GlobalVariables.reviewList.add(ret)
+                    saveJson(context,"review.json",GlobalVariables.reviewList)
+                    saveJson(context,"users.json",GlobalVariables.userList)
                 }
             )
             if(ImageReturnState){
@@ -73,6 +83,19 @@ fun ReviewGrid(context: Context) {
         }
         else if (selectedLocation == null) {
             // 기본 그리드
+            AndroidView(
+                factory = { inflater ->
+                    LayoutInflater.from(inflater).inflate(R.layout.recycler_view_layout, null) as RecyclerView
+                },
+                modifier = Modifier.fillMaxSize(),
+                update = { recyclerView ->
+                    recyclerView.layoutManager = GridLayoutManager(context, 3) // 3열 그리드
+                    recyclerView.adapter = ReviewAdapter(
+                        (0 until GlobalVariables.reviewList.size).toMutableList() ?: mutableListOf(),
+                        onItemClick = { selectedLocation = it }
+                    )
+                }
+            )
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 modifier = Modifier
@@ -107,10 +130,12 @@ fun ReviewGrid(context: Context) {
             }
         } else {
             // 확대된 이미지 뷰
-            ExpandedReview(
-                data = selectedLocation!!,
-                onClose = { selectedLocation = null } // 닫기 버튼 클릭 시 상태 초기화
-            )
+            selectedLocation?.let { location ->
+                ExpandedReview(
+                    data = location,
+                    onClose = { selectedLocation = null }
+                )
+            }
         }
     }
 }
@@ -173,6 +198,9 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             ) {
+                Button(onClick = { expanded=true }) {
+                    Text(text = GlobalVariables.placeList[selectPlace].name)
+                }
                 // 장소 이름
                 DropdownMenu(
                     expanded = expanded,
@@ -299,6 +327,7 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit) {
             Text(text = "${data.text}", style = MaterialTheme.typography.bodyMedium)
             Text(text = "별점: ${data.rating}", style = MaterialTheme.typography.bodyMedium)
             Text(text = "추천 수: ${data.recommend}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "작성자: ${data.owner}", style = MaterialTheme.typography.bodyMedium)
         }
         // 닫기 버튼
         TextButton(
