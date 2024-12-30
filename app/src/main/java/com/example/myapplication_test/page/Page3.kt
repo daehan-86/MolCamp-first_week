@@ -1,9 +1,8 @@
 package com.example.myapplication_test.page
 
+import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.myapplication_test.GlobalVariables
+import com.example.myapplication_test.ui.TabSection
 import com.example.myapplication_test.utils.decodeImageFromJsonString
 import com.example.myapplication_test.utils.getLocalImage
 import com.example.myapplication_test.utils.handleBitmapToBase64
@@ -49,7 +49,7 @@ import com.example.myapplication_test.utils.saveJson
 
 // 간단한 설정 화면
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(context: Context) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,7 +62,7 @@ fun SettingsScreen() {
         BadgeSection()
 
         // 3. 탭 영역
-        TabSection()
+        TabSection(context = context)
     }
 }
 
@@ -321,46 +321,86 @@ fun BadgeItem(index:Int){
 }
 
 // 탭 영역
-@Composable
-fun TabSection() {
-    var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("내 후기", "여행 갈곳")
-
-    Column {
-        // 탭 버튼
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            tabs.forEachIndexed { index, title ->
-                Text(
-                    text = title,
-                    modifier = Modifier
-                        .clickable { selectedTab = index }
-                        .padding(8.dp),
-                    style = if (selectedTab == index) {
-                        MaterialTheme.typography.bodyLarge
-                    } else {
-                        MaterialTheme.typography.bodyMedium
-                    }
-                )
-            }
-        }
-
-        // 탭 내용
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.LightGray),
-            contentAlignment = Alignment.Center
-        ) {
-            when (selectedTab) {
-                0 -> Text("화면 1")
-                1 -> Text("화면 2")
-                2 -> Text("화면 3")
-            }
-        }
-    }
-}
+//@Composable
+//fun TabSection() {
+//    var selectedTab by remember { mutableStateOf(0) }
+//    val tabs = listOf("내 후기", "여행 갈곳")
+//
+//    Column(
+//        modifier = Modifier.fillMaxSize()
+//    ) {
+//        // 탭 버튼
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 8.dp),
+//            horizontalArrangement = Arrangement.SpaceEvenly
+//        ) {
+//            tabs.forEachIndexed { index, title ->
+//                Text(
+//                    text = title,
+//                    modifier = Modifier
+//                        .clickable { selectedTab = index }
+//                        .padding(8.dp),
+//                    style = if (selectedTab == index) {
+//                        MaterialTheme.typography.bodyLarge
+//                    } else {
+//                        MaterialTheme.typography.bodyMedium
+//                    }
+//                )
+//            }
+//        }
+//
+//        // 탭 내용
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .background(Color.LightGray),
+//        ) {
+//            when (selectedTab) {
+//                0 -> MyReviews()
+////                0 -> Text(text = GlobalVariables.userList[GlobalVariables.userID].reviews.toString())
+//                1 -> Text("화면 2", modifier = Modifier.fillMaxSize())
+//            }
+//        }
+//    }
+//}
+//
+//@Composable
+//fun MyReviews(){
+//    var selectedLocation by remember { mutableStateOf<ReviewData?>(null) }
+//    val data = GlobalVariables.userList[GlobalVariables.userID]
+//    Box(modifier = Modifier.fillMaxSize()){
+//        if (selectedLocation == null) {
+//            // 기본 그리드
+//            if(data.reviews.size>0){
+//                LazyVerticalGrid(
+//                    columns = GridCells.Fixed(3),
+//                    modifier = Modifier
+//                        .fillMaxSize(),
+//                    horizontalArrangement = Arrangement.spacedBy(1.dp),
+//                    verticalArrangement = Arrangement.spacedBy(1.dp)
+//                ) {
+////                    items(data.reviews) { location ->
+//////                        Text(text = location.toString())
+//////                    ReviewItem(
+//////                        data = GlobalVariables.reviewList[location],
+//////                        onItemClick = { selectedLocation = it } // 클릭 시 이미지 선택
+//////                    )
+////                    }
+//                }
+//            }else{
+//                //게시물 없음
+//                Text(text = "후기 없음")
+//            }
+//        } else {
+//            // 확대된 이미지 뷰
+//            selectedLocation?.let { location ->
+//                ExpandedReview(
+//                    data = location,
+//                    onClose = { selectedLocation = null }
+//                )
+//            }
+//        }
+//    }
+//}
