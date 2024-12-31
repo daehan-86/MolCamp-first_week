@@ -1,5 +1,6 @@
 package com.example.myapplication_test
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,11 +9,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication_test.utils.decodeImageFromJsonString
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import java.io.File
 
 
 class ReviewAdapter(
@@ -27,7 +30,13 @@ class ReviewAdapter(
             // ComposeView를 통해 Compose 컴포저블 렌더링
             composeView.setContent {
                 Image(
-                    bitmap = decodeImageFromJsonString(data.image).asImageBitmap(),
+                    painter = // 이미지 전환 애니메이션
+                    rememberAsyncImagePainter(
+                        ImageRequest.Builder(LocalContext.current).data(data = Uri.fromFile(File(data.image)))
+                            .apply(block = fun ImageRequest.Builder.() {
+                                crossfade(true) // 이미지 전환 애니메이션
+                            }).build()
+                    ),
                     contentDescription = "Sample Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

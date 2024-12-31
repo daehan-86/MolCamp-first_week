@@ -19,7 +19,7 @@ import com.example.myapplication_test.ReviewData
 import com.example.myapplication_test.page.ExpandedReview
 
 @Composable
-fun RecyclerViewScreen(context: Context) {
+fun RecyclerViewScreen(context: Context, showID:Int) {
     var selectedLocation by remember { mutableStateOf<ReviewData?>(null) }
     if(selectedLocation==null){
         AndroidView(
@@ -30,7 +30,7 @@ fun RecyclerViewScreen(context: Context) {
             update = { recyclerView ->
                 recyclerView.layoutManager = GridLayoutManager(context, 3) // 3열 그리드
                 recyclerView.adapter = ReviewAdapter(
-                    GlobalVariables.userList[GlobalVariables.userID]?.reviews ?: mutableListOf(),
+                    GlobalVariables.userList[showID]?.reviews ?: mutableListOf(),
                     onItemClick = { selectedLocation = it }
                 )
             }
@@ -39,7 +39,8 @@ fun RecyclerViewScreen(context: Context) {
         selectedLocation?.let { location ->
             ExpandedReview(
                 data = location,
-                onClose = { selectedLocation = null }
+                onClose = { selectedLocation = null },
+                showUser = {}
             )
         }
     }

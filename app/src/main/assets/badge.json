@@ -3,18 +3,33 @@
     "id": 0,
     "name": "부잘알",
     "text": "부산을 대표하는 곳을 잘 앎",
-    "imageRoot": "test2_img"
+    "bronze": 10,
+    "silver": 20,
+    "gold": 30,
+    "bronzeImageRoot": "test2_img",
+    "silverImageRoot": "test2_img",
+    "goldImageRoot": "test2_img"
   },
   {
     "id": 1,
     "name": "서잘알",
     "text": "서울을 대표하는 곳을 잘 앎",
-    "imageRoot": "test3_img"
+    "bronze": 10,
+    "silver": 20,
+    "gold": 30,
+    "bronzeImageRoot": "test3_img",
+    "silverImageRoot": "test3_img",
+    "goldImageRoot": "test3_img"
   },
   {
     "id": 2,
     "name": "대잘알",
     "text": "대전을 대표하는 곳을 잘 앎",
-    "imageRoot": "test1_img"
+    "bronze": 10,
+    "silver": 20,
+    "gold": 30,
+    "bronzeImageRoot": "test1_img",
+    "silverImageRoot": "test1_img",
+    "goldImageRoot": "test1_img"
   }
 ]
