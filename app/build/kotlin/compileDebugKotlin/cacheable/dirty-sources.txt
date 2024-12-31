@@ -1,0 +1,16 @@
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\utils\DataBaseAlgorithm.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\ui\theme\Theme.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\ui\theme\Color.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\ui\ReviewAdapter.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\ui\theme\Type.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\MainActivity.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\ui\TabSection.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\ui\StaggeredImageAdapter.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\MainPage.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\ui\RecyclerViewScreen.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\page\Page1.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\page\Page2.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\Login.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\page\Page3.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\utils\ImageUploader.kt
+C:\android_project\projects\app\src\main\java\com\example\myapplication_test\utils\JsonReader.kt

@@ -67,9 +67,7 @@ import com.example.myapplication_test.R
 import com.example.myapplication_test.ReviewData
 import com.example.myapplication_test.utils.copyUriToInternalStorage
 import com.example.myapplication_test.utils.getLocalImage
-import com.google.android.gms.location.places.Place
 import java.io.File
-
 
 
 @Composable
