@@ -13,6 +13,7 @@ drawable ic_launcher_foreground
 drawable kakao_img
 drawable login_img
 drawable naver_img
+drawable save_icon
 drawable test1_img
 drawable test2_img
 drawable test3_img
