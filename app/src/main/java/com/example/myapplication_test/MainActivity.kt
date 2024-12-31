@@ -52,7 +52,7 @@ data class ReviewData(
     val owner: Int,
     var recommend: Int,
     val rating: Int,
-    val place: Int,
+    val place: String,
     var image: String, // uri
     val text: String,
 )
