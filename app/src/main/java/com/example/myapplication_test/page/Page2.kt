@@ -52,8 +52,8 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.myapplication_test.GlobalVariables
 import com.example.myapplication_test.R
-import com.example.myapplication_test.ReviewAdapter
 import com.example.myapplication_test.ReviewData
+import com.example.myapplication_test.ui.ReviewAdapter
 import com.example.myapplication_test.utils.copyUriToInternalStorage
 import com.example.myapplication_test.utils.getLocalImage
 import java.io.File
@@ -95,16 +95,32 @@ fun ReviewGrid(context: Context) {
         }
         else if (selectedLocation == null) {
             // 기본 그리드
+//            AndroidView(
+//                factory = { context ->
+//                    RecyclerView(context).apply {
+//                        layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).apply {
+//                            gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+//                        }
+//                        adapter = ReviewAdapter(
+//                            (0 until GlobalVariables.reviewList.size).toMutableList(),
+//                            onItemClick = { selectedLocation = it },
+//                            isProfile = false
+//                        )
+//                    }
+//                },
+//                modifier = Modifier.fillMaxSize()
+//            )
             AndroidView(
                 factory = { inflater ->
                     LayoutInflater.from(inflater).inflate(R.layout.recycler_view_layout, null) as RecyclerView
                 },
                 modifier = Modifier.fillMaxSize(),
                 update = { recyclerView ->
-                    recyclerView.layoutManager = GridLayoutManager(context, 3) // 3열 그리드
+                    recyclerView.layoutManager = GridLayoutManager(context, 2) // 3열 그리드
                     recyclerView.adapter = ReviewAdapter(
                         (0 until GlobalVariables.reviewList.size).toMutableList() ?: mutableListOf(),
-                        onItemClick = { selectedLocation = it }
+                        onItemClick = { selectedLocation = it },
+                        isProfile = false
                     )
                 }
             )
@@ -400,6 +416,7 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                     else Text(text = "♡", color = Color.Black)
                 }
                 Text(text = "${data.text}", style = MaterialTheme.typography.bodyMedium)
+                Text(text = "장소: ${GlobalVariables.placeList[data.place].name}", style = MaterialTheme.typography.bodyMedium)
                 Text(text = "별점: ${data.rating}", style = MaterialTheme.typography.bodyMedium)
                 Text(text = "추천 수: $recommendCount", style = MaterialTheme.typography.bodyMedium)
             }

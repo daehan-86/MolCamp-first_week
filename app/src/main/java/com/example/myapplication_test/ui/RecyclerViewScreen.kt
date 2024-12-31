@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication_test.GlobalVariables
 import com.example.myapplication_test.R
-import com.example.myapplication_test.ReviewAdapter
 import com.example.myapplication_test.ReviewData
 import com.example.myapplication_test.page.ExpandedReview
 

@@ -2,12 +2,14 @@ package com.example.myapplication_test.utils
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,4 +54,26 @@ fun saveDrawableToInternalStorage(context: Context, drawableId: Int, fileName: S
     }
 
     return file.absolutePath // 저장된 파일 경로 반환
+}
+
+
+@Composable
+fun rememberImageAspectRatio(filePath: String): Float {
+    val ratio = remember { mutableStateOf(1f) }
+
+    LaunchedEffect(filePath) {
+        val options = BitmapFactory.Options().apply {
+            inJustDecodeBounds = true // 실제 디코딩 안하고 정보만 얻기
+        }
+        BitmapFactory.decodeFile(filePath, options)
+
+        val w = options.outWidth
+        val h = options.outHeight
+        // h가 0이 아닌 경우에만 비율 계산
+        if (h != 0) {
+            ratio.value = w.toFloat() / h
+        }
+    }
+
+    return ratio.value
 }

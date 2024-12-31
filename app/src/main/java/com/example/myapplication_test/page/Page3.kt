@@ -75,7 +75,7 @@ fun SettingsScreen(context: Context, showID: Int, onClose:() -> Unit) {
             ProfileHeader(showID)
 
             // 2. 하이라이트 영역
-            BadgeSection()
+            BadgeSection(showID)
 
             // 3. 탭 영역
             TabSection(context = context,showID)
@@ -352,8 +352,8 @@ fun ProfileHeader(showID:Int) {
 
 // 하이라이트 영역
 @Composable
-fun BadgeSection() {
-    val data = GlobalVariables.userList[GlobalVariables.userID].badgeCount
+fun BadgeSection(showID: Int) {
+    val data = GlobalVariables.userList[showID].badgeCount
     val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
