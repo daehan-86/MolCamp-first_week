@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -60,6 +62,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState()) // 스크롤 추가
                 .padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -69,7 +72,7 @@ fun LoginScreen(
                 contentDescription = "한국 여행 홍보",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp), // 적절한 높이 설정
+                    .height(250.dp), // 적절한 높이 설정
                 contentScale = ContentScale.Crop
             )
 
@@ -84,8 +87,7 @@ fun LoginScreen(
                 colors = TextFieldDefaults.textFieldColors(
                     unfocusedIndicatorColor = Color.Gray, // 기본 상태 색상
                     focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 포커스 상태 색상
-                    containerColor = Color.White, // 배경색을 흰색으로 설정
-                     // 텍스트 색상을 검정색으로 설정
+                    containerColor = Color.White // 배경색을 흰색으로 설정
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,8 +104,7 @@ fun LoginScreen(
                 colors = TextFieldDefaults.textFieldColors(
                     unfocusedIndicatorColor = Color.Gray, // 기본 상태 색상
                     focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 포커스 상태 색상
-                    containerColor = Color.White, // 배경 색상
-                     // 텍스트 색상
+                    containerColor = Color.White // 배경 색상
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -151,8 +152,7 @@ fun LoginScreen(
                         color = Color(0xFF1E88E5) // 텍스트 색상을 #1E88E5로 설정
                     )
                 }
-        }
-
+            }
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -170,17 +170,17 @@ fun LoginScreen(
                 SNSLoginButton(
                     backgroundColor = Color(0xFF1877F2),
                     iconRes = R.drawable.facebook_img,
-                    buttonSize = 70.dp // 버튼과 아이콘의 크기를 동일하게 설정
+                    buttonSize = 50.dp // 버튼과 아이콘의 크기를 동일하게 설정
                 )
                 SNSLoginButton(
                     backgroundColor = Color(0xFFFFE812),
                     iconRes = R.drawable.kakao_img,
-                    buttonSize = 70.dp
+                    buttonSize = 50.dp
                 )
                 SNSLoginButton(
                     backgroundColor = Color(0xFF03C75A),
                     iconRes = R.drawable.naver_img,
-                    buttonSize = 70.dp
+                    buttonSize = 50.dp
                 )
             }
         }
@@ -286,3 +286,4 @@ fun SignUpDialog(
         }
     )
 }
+

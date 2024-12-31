@@ -227,6 +227,9 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                     tint = Color.Black
                 )
                 Spacer(modifier = Modifier.width(8.dp))
+                Button(onClick = { expanded=true }) {
+                    Text(text = GlobalVariables.placeList[selectPlace].name)
+                }
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }

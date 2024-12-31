@@ -179,8 +179,11 @@ int drawable ic_call_decline 0x7f04001d
 int drawable ic_call_decline_low 0x7f04001e
 int drawable ic_launcher_background 0x7f04001f
 int drawable ic_launcher_foreground 0x7f040020
+int drawable info_img 0x7f04003b
 int drawable kakao_img 0x7f040021
 int drawable login_img 0x7f040022
+int drawable lululala_img 0x7f040039
+int drawable more_info_icon 0x7f04003a
 int drawable naver_img 0x7f040023
 int drawable notification_action_background 0x7f040024
 int drawable notification_bg 0x7f040025
@@ -200,6 +203,8 @@ int drawable places_ic_search 0x7f040032
 int drawable powered_by_google_dark 0x7f040033
 int drawable powered_by_google_light 0x7f040034
 int drawable save_icon 0x7f040035
+int drawable tab1_img 0x7f04003c
+int drawable tab2_img 0x7f04003d
 int drawable test1_img 0x7f040036
 int drawable test2_img 0x7f040037
 int drawable test3_img 0x7f040038
