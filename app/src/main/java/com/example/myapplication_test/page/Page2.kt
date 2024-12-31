@@ -36,6 +36,8 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -67,9 +69,7 @@ import com.example.myapplication_test.R
 import com.example.myapplication_test.ReviewData
 import com.example.myapplication_test.utils.copyUriToInternalStorage
 import com.example.myapplication_test.utils.getLocalImage
-import com.google.android.gms.location.places.Place
 import java.io.File
-
 
 
 @Composable
@@ -164,9 +164,11 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
     val (imageUri, launcher) = getLocalImage()
 
     // 상태 저장
-    var locationText by remember { mutableStateOf("") } // 위치 입력용 상태
+//    var locationText by remember { mutableStateOf("") } // 위치 입력용 상태
+    var selectPlace by remember { mutableStateOf(0) }
     var reviewText by remember { mutableStateOf("") } // 후기 입력용 상태
     var satisfaction by remember { mutableStateOf(5) }
+    var expanded by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -225,12 +227,20 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                     tint = Color.Black
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                OutlinedTextField(
-                    value = locationText, // 위치 입력 상태 사용
-                    onValueChange = { locationText = it },
-                    placeholder = { Text("위치 작성해주세요") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    GlobalVariables.placeList.forEach { item ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectPlace = item.id
+                                expanded = false
+                            },
+                            text = {Text(text = item.name)}
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -284,7 +294,7 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                                 image = copyUriToInternalStorage(context, uri, "review${GlobalVariables.reviewList.size}.jpg"),
                                 rating = satisfaction,
                                 recommend = 0,
-                                place = locationText, // 위치 입력값 전달
+                                place = selectPlace, // 위치 입력값 전달
                                 text = reviewText // 후기 입력값 전달
                             )
                         )
@@ -455,7 +465,7 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                         )
                         Spacer(modifier = Modifier.height(13.dp)) // 위치 아이콘과 텍스트 간격 설정
                         Text(
-                            text = "알 수 없음", // 위치 정보 제거
+                            text = GlobalVariables.placeList[data.place].name, // 위치 정보 제거
                             style = MaterialTheme.typography.bodySmall
                         )
                     }

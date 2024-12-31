@@ -53,7 +53,7 @@ data class ReviewData(
     val owner: Int,
     var recommend: Int,
     val rating: Int,
-    val place: String,
+    val place: Int,
     var image: String, // uri
     val text: String,
 )
@@ -92,7 +92,6 @@ data class BadgeData(
     val silverImageRoot: String,
     val goldImageRoot: String,
 )
-
 
 class MainActivity : ComponentActivity() {
     private val handler = Handler(Looper.getMainLooper())
