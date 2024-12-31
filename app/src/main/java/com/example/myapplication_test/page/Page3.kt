@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -353,27 +354,32 @@ fun ProfileHeader(showID:Int) {
 @Composable
 fun BadgeSection() {
     val data = GlobalVariables.userList[GlobalVariables.userID].badgeCount
+    val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .horizontalScroll(scrollState)
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        data.forEach { item ->
-            BadgeItem(index = item)
+        data.forEachIndexed  { index,item ->
+            val name = GlobalVariables.badgeList[index].name
+            if(item>=GlobalVariables.badgeList[index].gold) BadgeItem(image = GlobalVariables.badgeList[index].goldImageRoot, name = "${name}Ⅰ")
+            else if(item>=GlobalVariables.badgeList[index].silver) BadgeItem(image = GlobalVariables.badgeList[index].silverImageRoot, name = "${name}Ⅱ")
+            else if(item>=GlobalVariables.badgeList[index].bronze) BadgeItem(image = GlobalVariables.badgeList[index].bronzeImageRoot, name = "${name}Ⅲ")
         }
     }
 
     Spacer(modifier = Modifier.height(16.dp))
 }
 @Composable
-fun BadgeItem(index:Int){
+fun BadgeItem(image:String,name:String){
     val context = LocalContext.current // Context 가져오기
-    val resourceId = context.resources.getIdentifier(GlobalVariables.badgeList[index].bronzeImageRoot, "drawable", context.packageName)
+    val resourceId = context.resources.getIdentifier(image, "drawable", context.packageName)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
             painter = painterResource(id = resourceId),
-            contentDescription = "Image from ${GlobalVariables.badgeList[index].name}",
+            contentDescription = "Image from $name",
             contentScale = ContentScale.Crop, // 이미지가 꽉 차도록 크롭
             modifier = Modifier
                 .size(70.dp)
@@ -382,7 +388,7 @@ fun BadgeItem(index:Int){
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = GlobalVariables.badgeList[index].name,
+            text = name,
             style = MaterialTheme.typography.bodySmall
         )
     }

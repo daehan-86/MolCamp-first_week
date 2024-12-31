@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.myapplication_test.ui.theme.MyApplication_testTheme
+import com.example.myapplication_test.utils.badgeReload
 import com.example.myapplication_test.utils.loadJson
 import com.example.myapplication_test.utils.parseJson
 import com.example.myapplication_test.utils.saveDrawableToInternalStorage
@@ -41,7 +42,7 @@ data class UserData(
     val follower: MutableList<Int>, // Sorted
     val following: MutableList<Int>, // Sorted
     val recommend: MutableList<Int>, // Sorted
-    val badgeCount: List<Int>, // Sorted
+    var badgeCount: MutableList<Int>, // Sorted
     val reviews: MutableList<Int>, // Unsorted
     val myPlaceList: MutableList<Int>, // Unsorted
 )
@@ -101,7 +102,7 @@ class MainActivity : ComponentActivity() {
             // 여기에 실행할 작업 작성
             saveJson(context = this@MainActivity,"users.json",GlobalVariables.userList)
             saveJson(context = this@MainActivity,"review.json",GlobalVariables.reviewList)
-
+            badgeReload()
             // 5초 후 다시 실행
         }
     }
@@ -145,7 +146,7 @@ class MainActivity : ComponentActivity() {
                                         mutableListOf(),
                                         mutableListOf(),
                                         mutableListOf(),
-                                        listOf(0,0,0),
+                                        mutableListOf(0,0,0),
                                         mutableListOf(),
                                         mutableListOf()
                                     )
