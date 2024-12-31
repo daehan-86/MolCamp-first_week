@@ -44,7 +44,7 @@ data class UserData(
     val recommend: MutableList<Int>, // Sorted
     var badgeCount: MutableList<Int>, // Sorted
     val reviews: MutableList<Int>, // Unsorted
-    val myPlaceList: MutableList<Int>, // Unsorted
+    var myPlaceList: MutableList<Int>, // Unsorted
 )
 
 @Serializable
