@@ -41,7 +41,7 @@ data class UserData(
     val follower: MutableList<Int>, // Sorted
     val following: MutableList<Int>, // Sorted
     val recommend: MutableList<Int>, // Sorted
-    val badges: MutableList<Int>, // Sorted
+    val badgeCount: List<Int>, // Sorted
     val reviews: MutableList<Int>, // Unsorted
     val myPlaceList: MutableList<Int>, // Unsorted
 )
@@ -66,7 +66,7 @@ data class PlaceData(
     val lon: Float,
     val imageRoot: String,
     val ratingAvg: Float,
-    val contacts: List<Int>,
+    val badges: List<Int>,
 )
 
 @Serializable
@@ -84,7 +84,12 @@ data class BadgeData(
     val id: Int,
     val name: String,
     val text: String,
-    val imageRoot: String,
+    val bronze: Int,
+    val silver: Int,
+    val gold: Int,
+    val bronzeImageRoot: String,
+    val silverImageRoot: String,
+    val goldImageRoot: String,
 )
 
 
@@ -95,6 +100,7 @@ class MainActivity : ComponentActivity() {
             handler.postDelayed(this, 1000L)
             // 여기에 실행할 작업 작성
             saveJson(context = this@MainActivity,"users.json",GlobalVariables.userList)
+            saveJson(context = this@MainActivity,"review.json",GlobalVariables.reviewList)
 
             // 5초 후 다시 실행
         }
@@ -139,12 +145,11 @@ class MainActivity : ComponentActivity() {
                                         mutableListOf(),
                                         mutableListOf(),
                                         mutableListOf(),
-                                        mutableListOf(0,1,2),
+                                        listOf(0,0,0),
                                         mutableListOf(),
                                         mutableListOf()
                                     )
                                 )
-                                saveJson(this, "users.json", GlobalVariables.userList)
                             }
                         )
                     }
@@ -154,6 +159,8 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onDestroy() {
+        saveJson(context = this@MainActivity,"users.json",GlobalVariables.userList)
+        saveJson(context = this@MainActivity,"review.json",GlobalVariables.reviewList)
         super.onDestroy()
         // Activity가 파괴되면 핸들러 중지
         handler.removeCallbacks(runnable)

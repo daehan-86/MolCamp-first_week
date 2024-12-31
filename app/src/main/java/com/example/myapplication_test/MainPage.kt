@@ -53,7 +53,7 @@ fun TabLayout(context: Context) {
             when (selectedTabIndex) {
                 0 -> HomeScreen()
                 1 -> ReviewGrid(context)
-                2 -> SettingsScreen(context)
+                2 -> SettingsScreen(context,GlobalVariables.userID,{})
             }
         }
     }

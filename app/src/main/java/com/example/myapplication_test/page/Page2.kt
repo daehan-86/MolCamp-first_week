@@ -5,8 +5,11 @@ import android.net.Uri
 import android.view.LayoutInflater
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -34,12 +38,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.compose.rememberAsyncImagePainter
@@ -50,7 +56,6 @@ import com.example.myapplication_test.ReviewAdapter
 import com.example.myapplication_test.ReviewData
 import com.example.myapplication_test.utils.copyUriToInternalStorage
 import com.example.myapplication_test.utils.getLocalImage
-import com.example.myapplication_test.utils.saveJson
 import java.io.File
 
 
@@ -60,8 +65,19 @@ fun ReviewGrid(context: Context) {
     var selectedLocation by remember { mutableStateOf<ReviewData?>(null) } // 선택된 이미지 상태
     var writeReviewMode by remember{ mutableStateOf(false) }
     var ImageReturnState by remember { mutableStateOf(false) }
+    var showThisUser by remember { mutableIntStateOf(-1) }
     Box(modifier = Modifier.fillMaxSize()) {
-        if(writeReviewMode){
+        if(showThisUser!=-1){
+
+            Dialog(
+                onDismissRequest = {
+                    showThisUser=-1
+                }
+            ) {
+                SettingsScreen(context, showThisUser, {showThisUser=-1})
+            }
+        }
+        else if(writeReviewMode){
             WriteReview(
                 context,
                 onClose = { writeReviewMode = false },
@@ -70,8 +86,6 @@ fun ReviewGrid(context: Context) {
                     ImageReturnState=true
                     GlobalVariables.userList[GlobalVariables.userID].reviews.add(ret.id)
                     GlobalVariables.reviewList.add(ret)
-                    saveJson(context,"review.json",GlobalVariables.reviewList)
-                    saveJson(context,"users.json",GlobalVariables.userList)
                 }
             )
             if(ImageReturnState){
@@ -131,12 +145,13 @@ fun ReviewGrid(context: Context) {
             selectedLocation?.let { location ->
                 ExpandedReview(
                     data = location,
-                    onClose = { selectedLocation = null }
+                    onClose = { selectedLocation = null },
+                    showUser = {showThisUser = location.owner},
                 )
+
             }
         }
     }
-    Text(text = "${GlobalVariables.reviewList.size}")
 }
 
 @Composable
@@ -305,73 +320,106 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
 
 
 @Composable
-fun ExpandedReview(data: ReviewData, onClose: () -> Unit) {
+fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) {
     val userdata = GlobalVariables.userList[GlobalVariables.userID]
     var isRecommend by remember { mutableStateOf(userdata.recommend.contains(data.id)) }
     var recommendCount by remember { mutableIntStateOf(data.recommend) }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        // 확대된 이미지
-        Column (
-            modifier = Modifier.fillMaxSize()
-        ){
-            Image(
-                painter = // 이미지 전환 애니메이션
-                rememberAsyncImagePainter(
-                    ImageRequest.Builder(LocalContext.current).data(data = Uri.fromFile(File(data.image)))
-                        .apply(block = fun ImageRequest.Builder.() {
-                            crossfade(true) // 이미지 전환 애니메이션
-                        }).build()
-                ),
-                contentDescription = "Expanded Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f) // 정사각형
-                    .padding(10.dp)
-            )
-            TextButton(
-                onClick = {
-                    isRecommend=!isRecommend
-                    if(isRecommend){
-                        userdata.recommend.add(data.id)
-                        data.recommend+=1
-                        recommendCount+=1
-                    }
-                    else{
-                        userdata.recommend.remove(data.id)
-                        data.recommend-=1
-                        recommendCount-=1
-                    }
-                }
-            ) {
-                if(isRecommend) Text(text = "♥", color = Color.Red)
-                else Text(text = "♡",color = Color.Black)
-            }
-            Text(text = "${data.text}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "별점: ${data.rating}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "추천 수: $recommendCount", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "작성자: ${data.owner}", style = MaterialTheme.typography.bodyMedium)
-        }
-        // 닫기 버튼
-        TextButton(
-            onClick = onClose,
-            shape = RoundedCornerShape(50.dp),
-            colors = ButtonDefaults.textButtonColors(
-                containerColor = Color.Black, // 배경색 설정
-                contentColor = Color.White // 텍스트 색상
-            ),
-            modifier = Modifier
-                .width(60.dp)
-                .height(60.dp)
-                .padding(10.dp)
-                .align(Alignment.TopStart)
-        ) {
-            Text("<", color = Color.White, fontSize = 24.sp)
-        }
 
+    Dialog(
+        onDismissRequest = {onClose()}
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            // 확대된 이미지
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            if(GlobalVariables.userID!=data.owner)
+                                showUser()
+                        } // 클릭 이벤트 전달
+                ) {
+                    val thisUser = GlobalVariables.userList[data.owner]
+                    Image(
+                        painter = // 이미지 전환 애니메이션
+                        rememberAsyncImagePainter(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(data = Uri.fromFile(File(thisUser.profile)))
+                                .apply(block = fun ImageRequest.Builder.() {
+                                    crossfade(true) // 이미지 전환 애니메이션
+                                })
+                                .build()
+                        ),
+                        contentDescription = "Sample Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .width(50.dp)
+                            .height(50.dp)
+                            .border(3.dp, Color.Black, CircleShape)
+                            .clip(CircleShape)
+                    )
+                    Text(text = thisUser.username)
+                }
+                Image(
+                    painter = // 이미지 전환 애니메이션
+                    rememberAsyncImagePainter(
+                        ImageRequest.Builder(LocalContext.current)
+                            .data(data = Uri.fromFile(File(data.image)))
+                            .apply(block = fun ImageRequest.Builder.() {
+                                crossfade(true) // 이미지 전환 애니메이션
+                            }).build()
+                    ),
+                    contentDescription = "Expanded Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f) // 정사각형
+                        .padding(10.dp)
+                )
+                TextButton(
+                    onClick = {
+                        isRecommend = !isRecommend
+                        if (isRecommend) {
+                            userdata.recommend.add(data.id)
+                            data.recommend += 1
+                            recommendCount += 1
+                        } else {
+                            userdata.recommend.remove(data.id)
+                            data.recommend -= 1
+                            recommendCount -= 1
+                        }
+                    }
+                ) {
+                    if (isRecommend) Text(text = "♥", color = Color.Red)
+                    else Text(text = "♡", color = Color.Black)
+                }
+                Text(text = "${data.text}", style = MaterialTheme.typography.bodyMedium)
+                Text(text = "별점: ${data.rating}", style = MaterialTheme.typography.bodyMedium)
+                Text(text = "추천 수: $recommendCount", style = MaterialTheme.typography.bodyMedium)
+            }
+            // 닫기 버튼
+            TextButton(
+                onClick = onClose,
+                shape = RoundedCornerShape(50.dp),
+                colors = ButtonDefaults.textButtonColors(
+                    containerColor = Color.Black, // 배경색 설정
+                    contentColor = Color.White // 텍스트 색상
+                ),
+                modifier = Modifier
+                    .width(60.dp)
+                    .height(60.dp)
+                    .padding(10.dp)
+                    .align(Alignment.TopEnd)
+            ) {
+                Text("X", color = Color.White, fontSize = 24.sp)
+            }
+
+        }
     }
 }

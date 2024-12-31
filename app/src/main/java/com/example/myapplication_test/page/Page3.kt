@@ -3,6 +3,7 @@ package com.example.myapplication_test.page
 import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -50,28 +52,41 @@ import java.io.File
 
 // 간단한 설정 화면
 @Composable
-fun SettingsScreen(context: Context) {
-    Column(
+fun SettingsScreen(context: Context, showID: Int, onClose:() -> Unit) {
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()) // 스크롤 추가
-    ) {
-        // 1. 상단 프로필 영역
-        ProfileHeader()
+            .background(MaterialTheme.colorScheme.background)
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()) // 스크롤 추가
+        ) {
+            if(showID!=GlobalVariables.userID){
+                Button(
+                    onClick = onClose
+                ) {
+                    Text(text = "X")
+                }
+            }
+            // 1. 상단 프로필 영역
+            ProfileHeader(showID)
 
-        // 2. 하이라이트 영역
-        BadgeSection()
+            // 2. 하이라이트 영역
+            BadgeSection()
 
-        // 3. 탭 영역
-        TabSection(context = context)
+            // 3. 탭 영역
+            TabSection(context = context,showID)
+        }
     }
 }
 
 // 상단 프로필 영역
 @Composable
-fun ProfileHeader() {
+fun ProfileHeader(showID:Int) {
     var showDialog by remember { mutableStateOf(false) } // 다이얼로그 상태 변수
-    val data = GlobalVariables.userList[GlobalVariables.userID]
+    val data = GlobalVariables.userList[showID]
     var reviewRecommendCnt = 0
     for(o in data.reviews){
         reviewRecommendCnt+=GlobalVariables.reviewList[o].recommend
@@ -192,20 +207,64 @@ fun ProfileHeader() {
         }
 
         Spacer(modifier = Modifier.weight(1f))
-
         // 중앙 아래: 프로필 편집 버튼
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            Row {
-                Button(onClick = { showDialog = true }) { // 다이얼로그 표시 상태를 true로 설정
-                    Text("프로필 편집")
+        if(GlobalVariables.userID == showID){
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Row {
+                    Button(onClick = { showDialog = true }) { // 다이얼로그 표시 상태를 true로 설정
+                        Text("프로필 편집")
+                    }
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Button(onClick = { GlobalVariables.userSession = false  }) { // 다이얼로그 표시 상태를 true로 설정
+                        Text("로그아웃")
+                    }
                 }
-                Spacer(modifier = Modifier.width(20.dp))
-                Button(onClick = { GlobalVariables.userSession = false  }) { // 다이얼로그 표시 상태를 true로 설정
-                    Text("로그아웃")
+            }
+        }
+        else{
+            var isFolowing by remember { mutableStateOf(data.follower.contains(GlobalVariables.userID)) }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                if(isFolowing){
+                    // 이사람 팔로잉 중이라면
+                    Button(
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = Color.DarkGray, // 배경색 설정
+                            contentColor = Color.White // 텍스트 색상
+                        ),
+                        onClick = {
+                            data.follower.remove(GlobalVariables.userID)
+                            GlobalVariables.userList[GlobalVariables.userID].following.remove(data.id)
+                            isFolowing = false
+                        }) { // 다이얼로그 표시 상태를 true로 설정
+                        Text(text="팔로잉", color = Color.White)
+                    }
+                }
+                else{
+                    Button(
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = Color.Blue, // 배경색 설정
+                            contentColor = Color.White // 텍스트 색상
+                        ),
+                        onClick = {
+                            data.follower.add(GlobalVariables.userID)
+                            GlobalVariables.userList[GlobalVariables.userID].following.add(data.id)
+                            isFolowing = true
+                    }) { // 다이얼로그 표시 상태를 true로 설정
+                        if(data.following.contains(GlobalVariables.userID)){
+                            Text(text="맞팔로우", color = Color.White)
+                        }
+                        else{
+                            Text(text="팔로우", color = Color.White)
+                        }
+                    }
                 }
             }
         }
@@ -293,7 +352,7 @@ fun ProfileHeader() {
 // 하이라이트 영역
 @Composable
 fun BadgeSection() {
-    val data = GlobalVariables.userList[GlobalVariables.userID].badges
+    val data = GlobalVariables.userList[GlobalVariables.userID].badgeCount
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -310,7 +369,7 @@ fun BadgeSection() {
 @Composable
 fun BadgeItem(index:Int){
     val context = LocalContext.current // Context 가져오기
-    val resourceId = context.resources.getIdentifier(GlobalVariables.badgeList[index].imageRoot, "drawable", context.packageName)
+    val resourceId = context.resources.getIdentifier(GlobalVariables.badgeList[index].bronzeImageRoot, "drawable", context.packageName)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
             painter = painterResource(id = resourceId),
