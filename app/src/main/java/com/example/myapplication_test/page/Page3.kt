@@ -41,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.myapplication_test.GlobalVariables
@@ -49,6 +50,7 @@ import com.example.myapplication_test.utils.copyUriToInternalStorage
 import com.example.myapplication_test.utils.getLocalImage
 import com.example.myapplication_test.utils.saveJson
 import java.io.File
+
 
 
 // 간단한 설정 화면
@@ -104,6 +106,7 @@ fun ProfileHeader(showID:Int) {
                 .padding(bottom = 16.dp)
         ) {
             // 왼쪽: 프로필 이미지와 이름
+            // 왼쪽: 프로필 이미지와 이름
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f)
@@ -121,11 +124,10 @@ fun ProfileHeader(showID:Int) {
                     contentDescription = "Sample Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .fillMaxWidth()
                         .width(100.dp)
                         .height(100.dp)
-                        .border(3.dp,Color.Black, CircleShape)
-                        .clip(CircleShape)
+                        .clip(RoundedCornerShape(16.dp)) // 모서리 반경 설정
+                        .border(3.dp, Color.White, RoundedCornerShape(16.dp)) // 정사각형 테두리 반경 설정
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -135,6 +137,7 @@ fun ProfileHeader(showID:Int) {
                     style = MaterialTheme.typography.titleMedium
                 )
             }
+
 
             Spacer(modifier = Modifier.width(16.dp))
 
@@ -208,24 +211,43 @@ fun ProfileHeader(showID:Int) {
         }
 
         Spacer(modifier = Modifier.weight(1f))
-        // 중앙 아래: 프로필 편집 버튼
-        if(GlobalVariables.userID == showID){
+// 중앙 아래: 프로필 편집 버튼
+        if (GlobalVariables.userID == showID) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                Row {
-                    Button(onClick = { showDialog = true }) { // 다이얼로그 표시 상태를 true로 설정
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly // 버튼 간격 조정
+                ) {
+                    Button(
+                        onClick = { showDialog = true },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF57B1FF), // 배경색 설정
+                            contentColor = Color.White // 텍스트 색상 설정
+                        ),
+                        modifier = Modifier.weight(1f) // 버튼 길이 동일하게 분배
+                    ) {
                         Text("프로필 편집")
                     }
                     Spacer(modifier = Modifier.width(20.dp))
-                    Button(onClick = { GlobalVariables.userSession = false  }) { // 다이얼로그 표시 상태를 true로 설정
+                    Button(
+                        onClick = { GlobalVariables.userSession = false },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF57B1FF), // 배경색 설정
+                            contentColor = Color.White // 텍스트 색상 설정
+                        ),
+                        modifier = Modifier.weight(1f) // 버튼 길이 동일하게 분배
+                    ) {
                         Text("로그아웃")
                     }
                 }
             }
         }
+
+
         else{
             var isFolowing by remember { mutableStateOf(data.follower.contains(GlobalVariables.userID)) }
             Box(
@@ -282,18 +304,23 @@ fun ProfileHeader(showID:Int) {
             title = { Text("프로필 편집") }, // 다이얼로그 제목
             text = {
                 Column {
-                    Text("프로필 정보를 수정하세요.")
-                    Spacer(modifier = Modifier.height(16.dp))
                     Box {
                         Button(
                             onClick = { launcher.launch("image/*") },
                             shape = RoundedCornerShape(0.dp), // 네모난 버튼
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF57B1FF) // 버튼 색상 변경
+                            ),
                             modifier = Modifier
                                 .width(100.dp)
                                 .height(100.dp)
                                 .clip(CircleShape)
                         ) {
-                            Text("이미지 업로드")
+                            Text(
+                                "+",
+                                fontSize = 24.sp, // 텍스트 크기 증가
+                                color = Color.White // 텍스트 색상 변경
+                            )
                         }
                         imageUri?.let { uri ->
                             Image(
@@ -324,29 +351,40 @@ fun ProfileHeader(showID:Int) {
                 }
             },
             confirmButton = {
-                Button(onClick = {
-                    // 저장 로직 추가
-                    showDialog = false // 다이얼로그 닫기
-                    data.username = tempname
-                    data.nationality = tempnation
-                    imageUri?.let { uri ->
-                        data.profile = copyUriToInternalStorage(context,uri,"profile${GlobalVariables.userID}.jpg")
-                    }
-                    saveJson(context = context,"users.json",GlobalVariables.userList)
-                }) {
-                    Text("저장")
+                Button(
+                    onClick = {
+                        // 저장 로직 추가
+                        showDialog = false // 다이얼로그 닫기
+                        data.username = tempname
+                        data.nationality = tempnation
+                        imageUri?.let { uri ->
+                            data.profile = copyUriToInternalStorage(context, uri, "profile${GlobalVariables.userID}.jpg")
+                        }
+                        saveJson(context = context, "users.json", GlobalVariables.userList)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF57B1FF) // 버튼 색상 변경
+                    )
+                ) {
+                    Text("저장", color = Color.White) // 텍스트 색상 변경
                 }
             },
             dismissButton = {
-                Button(onClick = { showDialog = false }) {
-                    Text("취소")
+                Button(
+                    onClick = { showDialog = false },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF57B1FF) // 버튼 색상 변경
+                    )
+                ) {
+                    Text("취소", color = Color.White) // 텍스트 색상 변경
                 }
             }
         )
-    }else{
-        tempname=data.username
-        tempnation=data.nationality
+    } else {
+        tempname = data.username
+        tempnation = data.nationality
     }
+
 }
 
 
@@ -384,7 +422,7 @@ fun BadgeItem(image:String,name:String){
             modifier = Modifier
                 .size(70.dp)
                 .clip(CircleShape)
-                .border(2.dp,Color.Black, CircleShape)
+                .border(2.dp,Color.White, CircleShape)
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
