@@ -22,9 +22,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -66,11 +70,7 @@ fun SettingsScreen(context: Context, showID: Int, onClose:() -> Unit) {
                 .verticalScroll(rememberScrollState()) // 스크롤 추가
         ) {
             if(showID!=GlobalVariables.userID){
-                Button(
-                    onClick = onClose
-                ) {
-                    Text(text = "X")
-                }
+                Spacer(modifier = Modifier.height(32.dp)) // 이미지와 상단 버튼 간 간격 추가
             }
             // 1. 상단 프로필 영역
             ProfileHeader(showID)
@@ -80,6 +80,18 @@ fun SettingsScreen(context: Context, showID: Int, onClose:() -> Unit) {
 
             // 3. 탭 영역
             TabSection(context = context,showID)
+        }
+
+        if(showID!=GlobalVariables.userID){
+            // 닫기 버튼
+            IconButton(
+                onClick = {onClose()},
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .size(40.dp)
+            ) {
+                Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+            }
         }
     }
 }

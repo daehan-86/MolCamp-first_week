@@ -417,7 +417,7 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .border(1.dp, Color.White, CircleShape)
-                                .clickable { showUser() }
+                                .clickable { if(data.owner!=GlobalVariables.userID)showUser() }
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
