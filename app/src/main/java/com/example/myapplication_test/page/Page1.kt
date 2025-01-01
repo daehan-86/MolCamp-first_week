@@ -1,5 +1,6 @@
 package com.example.myapplication_test.page
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,9 +35,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.myapplication_test.ContactData
 import com.example.myapplication_test.GlobalVariables
+import com.example.myapplication_test.R
 
 // JSON 데이터를 기반으로 박스를 렌더링하는 화면
 @Composable
@@ -77,10 +81,10 @@ fun BoxWithDialog(contactData: ContactData) {
                 color = Color.Black,
                 style = MaterialTheme.typography.bodyLarge
             )
-            Text(
-                text = "More info",
-                color = Color.Black,
-                style = MaterialTheme.typography.bodySmall
+            Image(
+                painter = painterResource(id = R.drawable.info_img), // drawable의 이미지 리소스 사용
+                contentDescription = "More info image",
+                modifier = Modifier.size(24.dp) // 이미지 크기 설정
             )
         }
     }

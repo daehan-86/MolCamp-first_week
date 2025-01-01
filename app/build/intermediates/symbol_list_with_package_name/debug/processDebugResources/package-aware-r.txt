@@ -180,8 +180,11 @@ drawable ic_call_decline
 drawable ic_call_decline_low
 drawable ic_launcher_background
 drawable ic_launcher_foreground
+drawable info_img
 drawable kakao_img
 drawable login_img
+drawable lululala_img
+drawable more_info_icon
 drawable naver_img
 drawable notification_action_background
 drawable notification_bg
@@ -201,6 +204,8 @@ drawable places_ic_search
 drawable powered_by_google_dark
 drawable powered_by_google_light
 drawable save_icon
+drawable tab1_img
+drawable tab2_img
 drawable test1_img
 drawable test2_img
 drawable test3_img

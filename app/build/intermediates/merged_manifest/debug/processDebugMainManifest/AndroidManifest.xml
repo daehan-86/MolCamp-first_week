@@ -34,8 +34,8 @@
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:debuggable="true"
         android:extractNativeLibs="false"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:icon="@drawable/lululala_img"
+        android:label="룰루랄라"
         android:testOnly="true"
         android:theme="@style/Theme.MyApplication_test" >
         <activity
