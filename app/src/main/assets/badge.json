@@ -6,9 +6,9 @@
     "bronze": 1,
     "silver": 2,
     "gold": 3,
-    "bronzeImageRoot": "test2_img",
-    "silverImageRoot": "test2_img",
-    "goldImageRoot": "test2_img"
+    "bronzeImageRoot": "busanbronze",
+    "silverImageRoot": "busansilver",
+    "goldImageRoot": "busangold"
   },
   {
     "id": 1,
@@ -17,9 +17,9 @@
     "bronze": 1,
     "silver": 2,
     "gold": 3,
-    "bronzeImageRoot": "test3_img",
-    "silverImageRoot": "test3_img",
-    "goldImageRoot": "test3_img"
+    "bronzeImageRoot": "seoulbronze",
+    "silverImageRoot": "seoulsilver",
+    "goldImageRoot": "seoulgold"
   },
   {
     "id": 2,
@@ -28,8 +28,8 @@
     "bronze": 1,
     "silver": 2,
     "gold": 3,
-    "bronzeImageRoot": "test1_img",
-    "silverImageRoot": "test1_img",
-    "goldImageRoot": "test1_img"
+    "bronzeImageRoot": "daejeonbronze",
+    "silverImageRoot": "daejeonsilver",
+    "goldImageRoot": "daejeongold"
   }
 ]

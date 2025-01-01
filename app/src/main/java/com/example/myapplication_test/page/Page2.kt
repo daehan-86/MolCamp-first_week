@@ -2,6 +2,7 @@ package com.example.myapplication_test.page
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.media.ExifInterface
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,7 +11,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -20,9 +20,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,7 +38,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -57,7 +53,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -118,8 +116,10 @@ fun ReviewGrid(context: Context) {
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     GlobalVariables.reviewList.filterIndexed { index, _ -> index % 2 == 0 }.forEach { location ->
-                        val imageHeight = calculateImageHeight(location.image)
-
+                        var width by remember { mutableStateOf(0.0)}
+                        val density = LocalDensity.current // 밀도 값 가져오기
+                        val imageHeight = calculateImageHeight(location.image,
+                            width = width)
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(16.dp))
@@ -127,6 +127,9 @@ fun ReviewGrid(context: Context) {
                                 .fillMaxWidth()
                                 .height(imageHeight.dp)
                                 .clickable { selectedLocation = location }
+                                .onGloballyPositioned { coordinates ->
+                                    width = (with(density) {coordinates.size.width.toDp()}).value.toDouble() // 현재 가로값 저장
+                                }
                         ) {
                             Image(
                                 painter = rememberAsyncImagePainter(
@@ -146,7 +149,10 @@ fun ReviewGrid(context: Context) {
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     GlobalVariables.reviewList.filterIndexed { index, _ -> index % 2 != 0 }.forEach { location ->
-                        val imageHeight = calculateImageHeight(location.image)
+                        var width by remember { mutableStateOf(0.0)}
+                        val density = LocalDensity.current // 밀도 값 가져오기
+                        val imageHeight = calculateImageHeight(location.image,
+                            width = width)
 
                         Box(
                             modifier = Modifier
@@ -155,6 +161,9 @@ fun ReviewGrid(context: Context) {
                                 .fillMaxWidth()
                                 .height(imageHeight.dp)
                                 .clickable { selectedLocation = location }
+                                .onGloballyPositioned { coordinates ->
+                                    width = (with(density) {coordinates.size.width.toDp()}).value.toDouble() // 현재 가로값 저장
+                                }
                         ) {
                             Image(
                                 painter = rememberAsyncImagePainter(
@@ -199,15 +208,30 @@ fun ReviewGrid(context: Context) {
 }
 
 // 이미지 비율에 따라 동적으로 높이를 계산하는 함수
-private fun calculateImageHeight(imagePath: String): Int {
+private fun calculateImageHeight(imagePath: String, width:Double): Int {
     val options = BitmapFactory.Options()
     options.inJustDecodeBounds = true
     BitmapFactory.decodeFile(imagePath, options)
-    val imageWidth = options.outWidth
-    val imageHeight = options.outHeight
+    var imageWidth = options.outWidth
+    var imageHeight = options.outHeight
 
-    // 가로 크기를 100% 기준으로 비율에 따라 높이 계산
-    val targetWidth = 200 // 기준 가로 크기 (dp)
+    // EXIF 데이터 읽기
+    val exif = ExifInterface(imagePath)
+    val rotationDegrees = when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+        ExifInterface.ORIENTATION_ROTATE_90,
+        ExifInterface.ORIENTATION_ROTATE_270 -> 90
+        else -> 0
+    }
+
+    // 이미지가 회전된 경우 가로와 세로 크기 교환
+    if (rotationDegrees == 90) {
+        val temp = imageWidth
+        imageWidth = imageHeight
+        imageHeight = temp
+    }
+
+    // 가로 크기를 기준으로 비율에 따라 높이 계산
+    val targetWidth = width // 기준 가로 크기 (dp)
     return (targetWidth * (imageHeight.toFloat() / imageWidth)).toInt()
 }
 
@@ -492,7 +516,7 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .border(1.dp, Color.White, CircleShape)
-                                .clickable { showUser() }
+                                .clickable { if(data.owner!=GlobalVariables.userID)showUser() }
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(

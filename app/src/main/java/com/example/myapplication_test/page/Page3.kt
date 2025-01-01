@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,12 +23,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +63,8 @@ import java.io.File
 // 간단한 설정 화면
 @Composable
 fun SettingsScreen(context: Context, showID: Int, onClose:() -> Unit) {
+    var showFollower by remember { mutableStateOf(false) }
+    var showFollowing by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -68,14 +76,10 @@ fun SettingsScreen(context: Context, showID: Int, onClose:() -> Unit) {
                 .verticalScroll(rememberScrollState()) // 스크롤 추가
         ) {
             if(showID!=GlobalVariables.userID){
-                Button(
-                    onClick = onClose
-                ) {
-                    Text(text = "X")
-                }
+                Spacer(modifier = Modifier.height(32.dp)) // 이미지와 상단 버튼 간 간격 추가
             }
             // 1. 상단 프로필 영역
-            ProfileHeader(showID)
+            ProfileHeader(showID, {showFollower = true},{showFollowing = true})
 
             // 2. 하이라이트 영역
             BadgeSection(showID)
@@ -83,12 +87,105 @@ fun SettingsScreen(context: Context, showID: Int, onClose:() -> Unit) {
             // 3. 탭 영역
             TabSection(context = context,showID)
         }
+
+        if(showID!=GlobalVariables.userID){
+            // 닫기 버튼
+            IconButton(
+                onClick = {onClose()},
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .size(40.dp)
+            ) {
+                Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+            }
+        }
+
+        if(showFollower){
+            Box(){
+                AlertDialog(
+                    onDismissRequest = { showFollower = false }, // 다이얼로그 외부를 클릭하면 닫힘
+                    title = null, // 타이틀 제거
+                    text = {
+                        Column(
+                            modifier = Modifier
+                                .background(Color.White) // 전체 다이얼로그 배경색
+                                .padding(16.dp)
+                        ) {
+                            // 제목
+                            Text(
+                                text = "팔로워",
+                                fontFamily = pretendardFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                color = Color.Black
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            GlobalVariables.userList[showID].follower.forEach { userData ->
+                                UserDialog(userData = userData) // contactData 객체를 전달
+                            }
+                        }
+                    },
+                    confirmButton = { /* 생략 가능 */ },
+                    containerColor = Color.White // 다이얼로그 기본 배경색
+                )
+                IconButton(
+                    onClick = {showFollower = false},
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(40.dp)
+                ) {
+                    Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                }
+            }
+        }
+        if(showFollowing){
+            Box(){
+                AlertDialog(
+                    onDismissRequest = { showFollowing = false }, // 다이얼로그 외부를 클릭하면 닫힘
+                    title = null, // 타이틀 제거
+                    text = {
+                        Column(
+                            modifier = Modifier
+                                .background(Color.White) // 전체 다이얼로그 배경색
+                                .padding(16.dp)
+                        ) {
+                            // 제목
+                            Text(
+                                text = "팔로잉",
+                                fontFamily = pretendardFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                color = Color.Black
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            GlobalVariables.userList[showID].following.forEach { userData ->
+                                UserDialog(userData = userData) // contactData 객체를 전달
+                            }
+                        }
+                    },
+                    confirmButton = { /* 생략 가능 */ },
+                    containerColor = Color.White // 다이얼로그 기본 배경색
+                )
+                IconButton(
+                    onClick = {showFollowing = false},
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(40.dp)
+                ) {
+                    Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                }
+            }
+        }
     }
 }
 
 // 상단 프로필 영역
 @Composable
-fun ProfileHeader(showID:Int) {
+fun ProfileHeader(showID:Int,showFollower:() -> Unit,showFollowing:() -> Unit) {
     var showDialog by remember { mutableStateOf(false) } // 다이얼로그 상태 변수
     val data = GlobalVariables.userList[showID]
     var reviewRecommendCnt = 0
@@ -168,18 +265,26 @@ fun ProfileHeader(showID:Int) {
                             fontWeight = FontWeight.Normal
                         )
                     }
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = data.follower.size.toString(),
-                            fontFamily = pretendardFontFamily,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
-                        )
-                        Text(
-                            text = "팔로워",
-                            fontFamily = pretendardFontFamily,
-                            fontWeight = FontWeight.Normal
-                        )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally) {
+                        TextButton(
+                            onClick = { showFollower() }
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = data.follower.size.toString(),
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
+                                )
+
+                                Text(
+                                    text = "팔로워",
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -191,17 +296,23 @@ fun ProfileHeader(showID:Int) {
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = data.following.size.toString(),
-                            fontFamily = pretendardFontFamily,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
-                        )
-                        Text(
-                            text = "팔로잉",
-                            fontFamily = pretendardFontFamily,
-                            fontWeight = FontWeight.Normal
-                        )
+                        TextButton(
+                            onClick = { showFollowing() }
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = data.following.size.toString(),
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
+                                )
+                                Text(
+                                    text = "팔로잉",
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            }
+                        }
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
@@ -462,3 +573,126 @@ fun BadgeItem(image:String,name:String){
 }
 
 
+@Composable
+fun UserDialog(userData: Int){
+    var showDialog by remember { mutableStateOf(false) } // 다이얼로그 표시 여부 상태 관리
+    var data = GlobalVariables.userList[userData]
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .padding(bottom = 0.dp)
+            .background(Color(0XFFFFFF)) // Box 배경색 설정
+            .clickable { showDialog = true } // 클릭 시 다이얼로그 표시
+    ) {
+        // 박스에 제목 및 전화번호 표시
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(15.dp),
+            verticalAlignment = Alignment.CenterVertically, // 세로 방향 중앙 정렬
+            horizontalArrangement = Arrangement.SpaceBetween // 양쪽 끝으로 정렬
+        ) {
+            Row{
+                Image(
+                    painter = // 이미지 전환 애니메이션
+                    rememberAsyncImagePainter(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(data = Uri.fromFile(File(data.profile)))
+                            .apply(block = fun ImageRequest.Builder.() {
+                                crossfade(true) // 이미지 전환 애니메이션
+                            })
+                            .build()
+                    ),
+                    contentDescription = "Sample Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .width(50.dp)
+                        .height(50.dp)
+                        .clip(RoundedCornerShape(16.dp)) // 모서리 반경 설정
+                        .border(3.dp, Color.White, RoundedCornerShape(16.dp)) // 정사각형 테두리 반경 설정
+                )
+                Text(
+                    text = data.username,
+                    color = Color.Black,
+                    fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 18.sp
+                )
+            }
+
+            var isFolowing by remember { mutableStateOf(data.follower.contains(GlobalVariables.userID)) }
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+                if(isFolowing){
+                    // 이사람 팔로잉 중이라면
+                    Button(
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = Color.DarkGray, // 배경색 설정
+                            contentColor = Color.White // 텍스트 색상
+                        ),
+                        onClick = {
+                            data.follower.remove(GlobalVariables.userID)
+                            GlobalVariables.userList[GlobalVariables.userID].following.remove(data.id)
+                            isFolowing = false
+                        }) { // 다이얼로그 표시 상태를 true로 설정
+                        Text(text="팔로잉", color = Color.White,
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal)
+                    }
+                }
+                else{
+                    Button(
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = Color.Blue, // 배경색 설정
+                            contentColor = Color.White // 텍스트 색상
+                        ),
+                        onClick = {
+                            data.follower.add(GlobalVariables.userID)
+                            GlobalVariables.userList[GlobalVariables.userID].following.add(data.id)
+                            isFolowing = true
+                        }) { // 다이얼로그 표시 상태를 true로 설정
+                        if(data.following.contains(GlobalVariables.userID)){
+                            Text(text="맞팔로우", color = Color.White,
+                                fontFamily = pretendardFontFamily,
+                                fontWeight = FontWeight.Normal)
+                        }
+                        else{
+                            Text(text="팔로우", color = Color.White,
+                                fontFamily = pretendardFontFamily,
+                                fontWeight = FontWeight.Normal)
+                        }
+                    }
+                }
+            }
+        }
+        if(showDialog){
+            if(userData != GlobalVariables.userID){
+                val context = LocalContext.current // Context 가져오기
+                Box(){
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false }, // 다이얼로그 외부를 클릭하면 닫힘
+                        title = null, // 타이틀 제거
+                        text = {
+                            SettingsScreen(context, userData, { showDialog = false })
+                        },
+                        confirmButton = { /* 생략 가능 */ },
+                        containerColor = Color.White // 다이얼로그 기본 배경색
+                    )
+                    IconButton(
+                        onClick = {showDialog = false},
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .size(40.dp)
+                    ) {
+                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                    }
+                }
+            }
+            else{
+                showDialog = false
+            }
+        }
+    }
+}
