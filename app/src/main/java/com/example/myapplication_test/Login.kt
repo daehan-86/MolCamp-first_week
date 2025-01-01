@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
@@ -53,30 +54,36 @@ fun LoginScreen(
     var errorMessage by remember { mutableStateOf("") }
     var showSignUpDialog by remember { mutableStateOf(false) }
 
+    // 추가: 이미지 크기 및 위쪽 여백 상태 변수
+    val imageSize = remember { mutableStateOf(100.dp) }
+    val imageTopPadding = remember { mutableStateOf(50.dp) }
+
     Box(
         modifier = Modifier
             .background(Color.White)
             .padding(16.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.TopCenter
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState()) // 스크롤 추가
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 이미지 추가 (타이틀 대체)
+            // 이미지 위쪽 여백 추가
+            Spacer(modifier = Modifier.height(imageTopPadding.value))
+
+            // 이미지 크기 및 비율 수정
             Image(
-                painter = painterResource(id = R.drawable.login_img), // 이미지 리소스 ID
+                painter = painterResource(id = R.drawable.lululala_img),
                 contentDescription = "한국 여행 홍보",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp), // 적절한 높이 설정
+                    .size(imageSize.value), // 정사각형 크기 설정
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // 아이디 입력
             TextField(
@@ -85,13 +92,13 @@ fun LoginScreen(
                 label = { Text("아이디 입력") },
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = Color.Gray, // 기본 상태 색상
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 포커스 상태 색상
-                    containerColor = Color.White // 배경색을 흰색으로 설정
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    containerColor = Color.White
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 24.dp)
             )
 
             // 비밀번호 입력
@@ -102,15 +109,14 @@ fun LoginScreen(
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 colors = TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = Color.Gray, // 기본 상태 색상
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary, // 포커스 상태 색상
-                    containerColor = Color.White // 배경 색상
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    containerColor = Color.White
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 24.dp)
             )
-
 
             if (errorMessage.isNotEmpty()) {
                 Text(errorMessage, color = Color.Red, modifier = Modifier.padding(bottom = 16.dp))
@@ -130,10 +136,10 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF1E88E5) // 버튼 배경색을 #1E88E5로 설정
+                    containerColor = Color(0xFF57B1FF)
                 )
             ) {
-                Text("로그인", color = Color.White) // 텍스트 색상은 흰색으로 설정
+                Text("로그인", color = Color.White)
             }
 
             Row(
@@ -143,13 +149,13 @@ fun LoginScreen(
                 TextButton(onClick = { showSignUpDialog = true }) {
                     Text(
                         text = "처음 오셨나요?",
-                        color = Color(0xFF1E88E5) // 텍스트 색상을 #1E88E5로 설정
+                        color = Color(0xFF1E88E5)
                     )
                 }
                 TextButton(onClick = { showSignUpDialog = true }) {
                     Text(
                         text = "회원 가입하기",
-                        color = Color(0xFF1E88E5) // 텍스트 색상을 #1E88E5로 설정
+                        color = Color(0xFF1E88E5)
                     )
                 }
             }
@@ -166,11 +172,10 @@ fun LoginScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // SNS 로그인 버튼
                 SNSLoginButton(
                     backgroundColor = Color(0xFF1877F2),
                     iconRes = R.drawable.facebook_img,
-                    buttonSize = 50.dp // 버튼과 아이콘의 크기를 동일하게 설정
+                    buttonSize = 50.dp
                 )
                 SNSLoginButton(
                     backgroundColor = Color(0xFFFFE812),
@@ -196,6 +201,8 @@ fun LoginScreen(
         }
     }
 }
+
+
 
 
 @Composable

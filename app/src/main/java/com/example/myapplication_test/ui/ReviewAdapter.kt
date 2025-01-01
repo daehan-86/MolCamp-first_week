@@ -51,13 +51,13 @@ class ReviewAdapter(
                         Modifier
                             .fillMaxWidth() // 그리드 셀 폭 = match_parent
                             .aspectRatio(1f)
-                            .padding(8.dp) // 이미지 간격 추가
+                            .padding(4.dp) // 이미지 간격 추가
                             .clip(RoundedCornerShape(16.dp)) // Corner radius 적용
                             .clickable { onItemClick(data) }
                     } else {
                         Modifier
                             .fillMaxSize()
-                            .padding(8.dp) // 이미지 간격 추가
+                            .padding(4.dp) // 이미지 간격 추가
                             .clip(RoundedCornerShape(16.dp)) // Corner radius 적용
                             .clickable { onItemClick(data) }
                     }

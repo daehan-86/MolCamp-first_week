@@ -52,7 +52,7 @@ fun TabLayout(context: Context) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 0.dp, vertical = 8.dp),
-                containerColor = Color(0xFF90CAF9), // 배경색 설정
+                containerColor = Color(0xFF57B1FF), // 배경색 설정
                 contentColor = Color.White // 텍스트 및 아이콘 색상
             ) {
                 screens.forEachIndexed { index, title ->

@@ -36,10 +36,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.myapplication_test.ContactData
 import com.example.myapplication_test.GlobalVariables
 import com.example.myapplication_test.R
+import com.example.myapplication_test.utils.pretendardFontFamily
 
 // JSON 데이터를 기반으로 박스를 렌더링하는 화면
 @Composable
@@ -79,7 +82,9 @@ fun BoxWithDialog(contactData: ContactData) {
             Text(
                 text = contactData.name,
                 color = Color.Black,
-                style = MaterialTheme.typography.bodyLarge
+                fontFamily = pretendardFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
             )
             Image(
                 painter = painterResource(id = R.drawable.info_img), // drawable의 이미지 리소스 사용
@@ -96,7 +101,7 @@ fun BoxWithDialog(contactData: ContactData) {
             text = {
                 Column(
                     modifier = Modifier
-                        .background(Color(0xFFE3F2FD)) // 전체 다이얼로그 배경색
+                        .background(Color(0xFF57B1FF)) // 전체 다이얼로그 배경색
                         .padding(16.dp)
                 ) {
                     // 제목
@@ -106,7 +111,7 @@ fun BoxWithDialog(contactData: ContactData) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        color = Color.Black
+                        color = Color.White
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -116,8 +121,7 @@ fun BoxWithDialog(contactData: ContactData) {
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
-                            .background(Color(0xFF90CAF9)),
+                            .padding(16.dp),
                         color = Color.White
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -176,7 +180,7 @@ fun BoxWithDialog(contactData: ContactData) {
                 }
             },
             confirmButton = { /* 생략 가능 */ },
-            containerColor = Color(0xFFE3F2FD) // 다이얼로그 기본 배경색
+            containerColor = Color(0xFF57B1FF) // 다이얼로그 기본 배경색
         )
     }
 }
