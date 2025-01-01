@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -52,6 +53,7 @@ import com.example.myapplication_test.GlobalVariables
 import com.example.myapplication_test.ui.TabSection
 import com.example.myapplication_test.utils.copyUriToInternalStorage
 import com.example.myapplication_test.utils.getLocalImage
+import com.example.myapplication_test.utils.pretendardFontFamily
 import com.example.myapplication_test.utils.saveJson
 import java.io.File
 
@@ -145,7 +147,8 @@ fun ProfileHeader(showID:Int) {
 
                 Text(
                     text = data.username,
-                    style = MaterialTheme.typography.titleMedium
+                    fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
 
@@ -167,23 +170,27 @@ fun ProfileHeader(showID:Int) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = data.nationality,
-                            style = MaterialTheme.typography.bodyLarge,
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal,
                             modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
                         )
                         Text(
                             text = "국적",
-                            style = MaterialTheme.typography.bodySmall
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = data.follower.size.toString(),
-                            style = MaterialTheme.typography.bodyLarge,
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal,
                             modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
                         )
                         Text(
                             text = "팔로워",
-                            style = MaterialTheme.typography.bodySmall
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
                 }
@@ -198,23 +205,27 @@ fun ProfileHeader(showID:Int) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = data.following.size.toString(),
-                            style = MaterialTheme.typography.bodyLarge,
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal,
                             modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
                         )
                         Text(
                             text = "팔로잉",
-                            style = MaterialTheme.typography.bodySmall
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = reviewRecommendCnt.toString(),
-                            style = MaterialTheme.typography.bodyLarge,
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal,
                             modifier = Modifier.padding(bottom = 4.dp) // 독립적 간격 조정
                         )
                         Text(
                             text = "좋아요",
-                            style = MaterialTheme.typography.bodySmall
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
                 }
@@ -241,7 +252,9 @@ fun ProfileHeader(showID:Int) {
                         ),
                         modifier = Modifier.weight(1f) // 버튼 길이 동일하게 분배
                     ) {
-                        Text("프로필 편집")
+                        Text("프로필 편집",
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal)
                     }
                     Spacer(modifier = Modifier.width(20.dp))
                     Button(
@@ -252,7 +265,9 @@ fun ProfileHeader(showID:Int) {
                         ),
                         modifier = Modifier.weight(1f) // 버튼 길이 동일하게 분배
                     ) {
-                        Text("로그아웃")
+                        Text("로그아웃",
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal)
                     }
                 }
             }
@@ -278,7 +293,9 @@ fun ProfileHeader(showID:Int) {
                             GlobalVariables.userList[GlobalVariables.userID].following.remove(data.id)
                             isFolowing = false
                         }) { // 다이얼로그 표시 상태를 true로 설정
-                        Text(text="팔로잉", color = Color.White)
+                        Text(text="팔로잉", color = Color.White,
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal)
                     }
                 }
                 else{
@@ -293,10 +310,14 @@ fun ProfileHeader(showID:Int) {
                             isFolowing = true
                     }) { // 다이얼로그 표시 상태를 true로 설정
                         if(data.following.contains(GlobalVariables.userID)){
-                            Text(text="맞팔로우", color = Color.White)
+                            Text(text="맞팔로우", color = Color.White,
+                                fontFamily = pretendardFontFamily,
+                                fontWeight = FontWeight.Normal)
                         }
                         else{
-                            Text(text="팔로우", color = Color.White)
+                            Text(text="팔로우", color = Color.White,
+                                fontFamily = pretendardFontFamily,
+                                fontWeight = FontWeight.Normal)
                         }
                     }
                 }
@@ -312,7 +333,9 @@ fun ProfileHeader(showID:Int) {
 
         AlertDialog(
             onDismissRequest = { showDialog = false }, // 다이얼로그 외부 클릭 시 닫힘
-            title = { Text("프로필 편집") }, // 다이얼로그 제목
+            title = { Text("프로필 편집",
+                fontFamily = pretendardFontFamily,
+                fontWeight = FontWeight.Normal) }, // 다이얼로그 제목
             text = {
                 Column {
                     Box {
@@ -330,7 +353,9 @@ fun ProfileHeader(showID:Int) {
                             Text(
                                 "+",
                                 fontSize = 24.sp, // 텍스트 크기 증가
-                                color = Color.White // 텍스트 색상 변경
+                                color = Color.White, // 텍스트 색상 변경,
+                                fontFamily = pretendardFontFamily,
+                                fontWeight = FontWeight.Normal
                             )
                         }
                         imageUri?.let { uri ->
@@ -377,7 +402,9 @@ fun ProfileHeader(showID:Int) {
                         containerColor = Color(0xFF57B1FF) // 버튼 색상 변경
                     )
                 ) {
-                    Text("저장", color = Color.White) // 텍스트 색상 변경
+                    Text("저장", color = Color.White,
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Normal) // 텍스트 색상 변경
                 }
             },
             dismissButton = {
@@ -387,7 +414,9 @@ fun ProfileHeader(showID:Int) {
                         containerColor = Color(0xFF57B1FF) // 버튼 색상 변경
                     )
                 ) {
-                    Text("취소", color = Color.White) // 텍스트 색상 변경
+                    Text("취소", color = Color.White,
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Normal) // 텍스트 색상 변경
                 }
             }
         )
@@ -438,7 +467,8 @@ fun BadgeItem(image:String,name:String){
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = name,
-            style = MaterialTheme.typography.bodySmall
+            fontFamily = pretendardFontFamily,
+            fontWeight = FontWeight.Normal
         )
     }
 }

@@ -36,10 +36,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.myapplication_test.ContactData
 import com.example.myapplication_test.GlobalVariables
 import com.example.myapplication_test.R
+import com.example.myapplication_test.utils.pretendardFontFamily
 
 // JSON 데이터를 기반으로 박스를 렌더링하는 화면
 @Composable
@@ -79,7 +82,9 @@ fun BoxWithDialog(contactData: ContactData) {
             Text(
                 text = contactData.name,
                 color = Color.Black,
-                style = MaterialTheme.typography.bodyLarge
+                fontFamily = pretendardFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 18.sp
             )
             Image(
                 painter = painterResource(id = R.drawable.info_img), // drawable의 이미지 리소스 사용
@@ -96,13 +101,14 @@ fun BoxWithDialog(contactData: ContactData) {
             text = {
                 Column(
                     modifier = Modifier
-                        .background(Color(0xFFE3F2FD)) // 전체 다이얼로그 배경색
+                        .background(Color.White) // 전체 다이얼로그 배경색
                         .padding(16.dp)
                 ) {
                     // 제목
                     Text(
                         text = contactData.name,
-                        style = MaterialTheme.typography.titleMedium,
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
@@ -113,12 +119,12 @@ fun BoxWithDialog(contactData: ContactData) {
                     // 설명
                     Text(
                         text = contactData.text,
-                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Normal,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
-                            .background(Color(0xFF90CAF9)),
-                        color = Color.White
+                            .padding(16.dp),
+                        color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -136,7 +142,7 @@ fun BoxWithDialog(contactData: ContactData) {
                                 )
                                 context.startActivity(intent)
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF90CAF9))
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B1FF))
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically // 아이콘과 텍스트 세로 중앙 정렬
@@ -145,12 +151,14 @@ fun BoxWithDialog(contactData: ContactData) {
                                 Text(
                                     text = "🌐", // 웹과 관련된 이모지 사용 (원한다면 수정 가능)
                                     modifier = Modifier.padding(end = 8.dp),
-                                    style = MaterialTheme.typography.bodyMedium
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.Normal
                                 )
                                 // 버튼 텍스트
                                 Text(
                                     text = "Web",
-                                    style = MaterialTheme.typography.bodyMedium
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.Normal
                                 )
                             }
                         }
@@ -164,7 +172,7 @@ fun BoxWithDialog(contactData: ContactData) {
                                 )
                                 context.startActivity(intent)
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF90CAF9))
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B1FF))
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(Icons.Default.Phone, contentDescription = "Tel")
@@ -176,7 +184,7 @@ fun BoxWithDialog(contactData: ContactData) {
                 }
             },
             confirmButton = { /* 생략 가능 */ },
-            containerColor = Color(0xFFE3F2FD) // 다이얼로그 기본 배경색
+            containerColor = Color.White // 다이얼로그 기본 배경색
         )
     }
 }

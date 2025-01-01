@@ -1,6 +1,7 @@
 package com.example.myapplication_test.page
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -58,6 +59,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,12 +71,13 @@ import com.example.myapplication_test.R
 import com.example.myapplication_test.ReviewData
 import com.example.myapplication_test.utils.copyUriToInternalStorage
 import com.example.myapplication_test.utils.getLocalImage
+import com.example.myapplication_test.utils.pretendardFontFamily
 import java.io.File
 
 
 @Composable
 fun ReviewGrid(context: Context) {
-    var selectedLocation by remember { mutableStateOf<ReviewData?>(null) } // 선택된 이미지 상태
+    var selectedLocation by remember { mutableStateOf<ReviewData?>(null) }
     var writeReviewMode by remember { mutableStateOf(false) }
     var imageReturnState by remember { mutableStateOf(false) }
     var showThisUser by remember { mutableIntStateOf(-1) }
@@ -101,30 +104,67 @@ fun ReviewGrid(context: Context) {
                 imageReturnState = false
             }
         } else if (selectedLocation == null) {
-            // 기본 그리드
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2), // 2열 그리드
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(13.dp), // 사진 간 가로 간격
-                verticalArrangement = Arrangement.spacedBy(13.dp), // 사진 간 세로 간격
-                contentPadding = PaddingValues(13.dp) // 전체 그리드의 패딩
+            // 스크롤 가능하도록 수정
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(GlobalVariables.reviewList) { location ->
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp)) // Corner Radius 추가
-                            .background(Color(0xFFE3F2FD)) // 배경색 추가
-                            .aspectRatio(1f) // 정사각형 비율
-                            .clickable { selectedLocation = location }
-                    ) {
-                        Image(
-                            painter = rememberAsyncImagePainter(
-                                model = Uri.fromFile(File(location.image))
-                            ),
-                            contentDescription = "Uploaded Image",
-                            contentScale = ContentScale.Crop, // 이미지 크롭
-                            modifier = Modifier.fillMaxSize()
-                        )
+                // 왼쪽 열
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    GlobalVariables.reviewList.filterIndexed { index, _ -> index % 2 == 0 }.forEach { location ->
+                        val imageHeight = calculateImageHeight(location.image)
+
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color(0xFFE3F2FD))
+                                .fillMaxWidth()
+                                .height(imageHeight.dp)
+                                .clickable { selectedLocation = location }
+                        ) {
+                            Image(
+                                painter = rememberAsyncImagePainter(
+                                    model = Uri.fromFile(File(location.image))
+                                ),
+                                contentDescription = "Uploaded Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
+                }
+
+                // 오른쪽 열
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    GlobalVariables.reviewList.filterIndexed { index, _ -> index % 2 != 0 }.forEach { location ->
+                        val imageHeight = calculateImageHeight(location.image)
+
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color(0xFFE3F2FD))
+                                .fillMaxWidth()
+                                .height(imageHeight.dp)
+                                .clickable { selectedLocation = location }
+                        ) {
+                            Image(
+                                painter = rememberAsyncImagePainter(
+                                    model = Uri.fromFile(File(location.image))
+                                ),
+                                contentDescription = "Uploaded Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
                     }
                 }
             }
@@ -132,17 +172,18 @@ fun ReviewGrid(context: Context) {
             // 업로드 버튼
             TextButton(
                 onClick = { writeReviewMode = true },
-                shape = RoundedCornerShape(200.dp), // 둥근 버튼
+                shape = RoundedCornerShape(200.dp),
                 colors = ButtonDefaults.textButtonColors(
-                    containerColor = Color(0xFF90CAF9), // 버튼 배경색
-                    contentColor = Color.White // 버튼 텍스트 색상
+                    containerColor = Color(0xFF57B1FF),
+                    contentColor = Color.White
                 ),
                 modifier = Modifier
-                    .size(100.dp) // 크기 설정
+                    .size(100.dp)
                     .padding(16.dp)
                     .align(Alignment.BottomEnd)
             ) {
-                Text("+", color = Color.White, fontSize = 36.sp) // + 이모지
+                Text("+", fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.Bold, color = Color.White, fontSize = 36.sp)
             }
         } else {
             // 확대된 이미지 뷰
@@ -157,6 +198,20 @@ fun ReviewGrid(context: Context) {
     }
 }
 
+// 이미지 비율에 따라 동적으로 높이를 계산하는 함수
+private fun calculateImageHeight(imagePath: String): Int {
+    val options = BitmapFactory.Options()
+    options.inJustDecodeBounds = true
+    BitmapFactory.decodeFile(imagePath, options)
+    val imageWidth = options.outWidth
+    val imageHeight = options.outHeight
+
+    // 가로 크기를 100% 기준으로 비율에 따라 높이 계산
+    val targetWidth = 200 // 기준 가로 크기 (dp)
+    return (targetWidth * (imageHeight.toFloat() / imageWidth)).toInt()
+}
+
+
 
 
 @Composable
@@ -164,7 +219,6 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
     val (imageUri, launcher) = getLocalImage()
 
     // 상태 저장
-//    var locationText by remember { mutableStateOf("") } // 위치 입력용 상태
     var selectPlace by remember { mutableStateOf(0) }
     var reviewText by remember { mutableStateOf("") } // 후기 입력용 상태
     var satisfaction by remember { mutableStateOf(5) }
@@ -173,7 +227,7 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE3F2FD)) // 전체 배경색
+            .background(Color(0xFFFFFFFF)) // 전체 배경색
             .padding(16.dp)
     ) {
         Column(
@@ -185,9 +239,8 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1.5f) // 사진처럼 약간 직사각형 비율
                     .clip(RoundedCornerShape(16.dp)) // 모서리 둥글게
-                    .background(Color.White) // 배경색
+                    .background(Color(0xFF57B1FF)) // 배경색
                     .clickable { launcher.launch("image/*") }
             ) {
                 if (imageUri == null) {
@@ -197,14 +250,16 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                         modifier = Modifier
                             .align(Alignment.Center)
                             .size(60.dp),
-                        tint = Color.Gray
+                        tint = Color.White
                     )
                 } else {
                     Image(
                         painter = rememberAsyncImagePainter(imageUri),
                         contentDescription = "Uploaded Image",
                         contentScale = ContentScale.Fit, // 원본 비율 유지
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(getImageAspectRatio(imageUri)) // 이미지 비율에 맞춤
                     )
                 }
             }
@@ -216,7 +271,7 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp)) // 모서리 둥글게
-                    .background(Color(0xFFBBDEFB))
+                    .background(Color(0xFF57B1FF))
                     .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -224,10 +279,10 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                     imageVector = Icons.Default.Place, // 장소 아이콘
                     contentDescription = "Location",
                     modifier = Modifier.size(24.dp),
-                    tint = Color.Black
+                    tint = Color.White
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = { expanded=true }) {
+                Button(onClick = { expanded = true }) {
                     Text(text = GlobalVariables.placeList[selectPlace].name)
                 }
                 DropdownMenu(
@@ -240,7 +295,10 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                                 selectPlace = item.id
                                 expanded = false
                             },
-                            text = {Text(text = item.name)}
+                            text = { Text(text = item.name,
+                                fontFamily = pretendardFontFamily,
+                                fontWeight = FontWeight.Normal)
+                            }
                         )
                     }
                 }
@@ -253,7 +311,8 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("만족도", style = MaterialTheme.typography.bodyLarge)
+                Text("만족도", fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.width(8.dp))
                 Slider(
                     value = satisfaction.toFloat(),
@@ -265,8 +324,9 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "$satisfaction",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color.Black
+                    fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White
                 )
             }
 
@@ -276,7 +336,9 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
             OutlinedTextField(
                 value = reviewText, // 후기 입력 상태 사용
                 onValueChange = { reviewText = it },
-                placeholder = { Text("후기 작성해주세요") },
+                placeholder = { Text("후기 작성해주세요",
+                    fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.Normal) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp),
@@ -307,9 +369,10 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                     .fillMaxWidth()
                     .height(50.dp)
                     .clip(RoundedCornerShape(16.dp)),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF90CAF9))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B1FF))
             ) {
-                Text("업로드", color = Color.White, style = MaterialTheme.typography.bodyMedium)
+                Text("업로드", color = Color.White, fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.SemiBold)
             }
         }
 
@@ -327,6 +390,17 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
             )
         }
     }
+}
+
+// 이미지 비율을 계산하는 함수
+@Composable
+private fun getImageAspectRatio(imageUri: Uri): Float {
+    val options = BitmapFactory.Options()
+    options.inJustDecodeBounds = true
+    val inputStream = LocalContext.current.contentResolver.openInputStream(imageUri)
+    BitmapFactory.decodeStream(inputStream, null, options)
+    inputStream?.close()
+    return options.outWidth.toFloat() / options.outHeight.toFloat()
 }
 
 //@Composable
@@ -363,12 +437,13 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFE3F2FD)) // 전체 배경색
+                .background(Color(0xFFFFFFFF)) // 전체 배경색
                 .padding(16.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState()) // 스크롤 가능 추가
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally // 수평 정렬
             ) {
@@ -383,11 +458,11 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                             .build()
                     ),
                     contentDescription = "Expanded Image",
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit, // 원본 비율 유지하도록 수정
                     modifier = Modifier
                         .fillMaxWidth()
+                        .aspectRatio(calculateImageAspectRatio(data.image)) // 이미지 비율 유지
                         .clip(RoundedCornerShape(16.dp))
-                        .height(350.dp) // 이미지 높이 설정
                         .background(Color.White)
                 )
 
@@ -422,7 +497,8 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = thisUser.username,
-                            style = MaterialTheme.typography.bodySmall
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
 
@@ -454,7 +530,8 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                         Spacer(modifier = Modifier.height(0.dp)) // 좋아요 아이콘과 텍스트 간격 설정
                         Text(
                             text = "$recommendCount",
-                            style = MaterialTheme.typography.bodySmall
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
 
@@ -471,7 +548,8 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                         Spacer(modifier = Modifier.height(13.dp)) // 위치 아이콘과 텍스트 간격 설정
                         Text(
                             text = GlobalVariables.placeList[data.place].name, // 위치 정보 제거
-                            style = MaterialTheme.typography.bodySmall
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
                     Spacer(modifier = Modifier.width(20.dp)) // 아이콘 간격 조정
@@ -489,25 +567,17 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                             }
                         ) {
                             Icon(
-                                painter = if(isSaved) painterResource(id = R.drawable.save_icon) else painterResource(id = R.drawable.unsave_icon),
+                                painter = if (isSaved) painterResource(id = R.drawable.save_icon) else painterResource(id = R.drawable.unsave_icon),
                                 contentDescription = "Recommend",
                                 tint = Color.Black,
                                 modifier = Modifier.size(25.dp) // 크기 조정
                             )
                         }
-//                        Image(
-//                            painter = painterResource(id = R.drawable.save_icon), // 업로드한 이미지 파일 참조
-//                            contentDescription = "Save Icon",
-//                            modifier = Modifier
-//                                .size(25.dp) // 크기 조정
-//                                .clickable{
-//                                    GlobalVariables.userList[GlobalVariables.userID].myPlaceList.add(data.id)
-//                                }
-//                        )
                         Spacer(modifier = Modifier.height(1.dp)) // 저장 아이콘과 텍스트 간격 설정
                         Text(
-                            text = if(isSaved) "저장됨" else "저장",
-                            style = MaterialTheme.typography.bodySmall
+                            text = if (isSaved) "저장됨" else "저장",
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
                 }
@@ -518,12 +588,12 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFF90CAF9)) // 후기란 배경색 변경
                         .padding(16.dp) // 내용에 여백 추가
                 ) {
                     Text(
                         text = data.text,
-                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -540,6 +610,17 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
             }
         }
     }
+}
+
+// 이미지 비율을 계산하는 함수
+private fun calculateImageAspectRatio(imagePath: String): Float {
+    val options = BitmapFactory.Options()
+    options.inJustDecodeBounds = true
+    BitmapFactory.decodeFile(imagePath, options)
+    val imageWidth = options.outWidth
+    val imageHeight = options.outHeight
+
+    return imageWidth.toFloat() / imageHeight.toFloat()
 }
 
 
