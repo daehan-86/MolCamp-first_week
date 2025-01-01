@@ -59,6 +59,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,6 +71,7 @@ import com.example.myapplication_test.R
 import com.example.myapplication_test.ReviewData
 import com.example.myapplication_test.utils.copyUriToInternalStorage
 import com.example.myapplication_test.utils.getLocalImage
+import com.example.myapplication_test.utils.pretendardFontFamily
 import java.io.File
 
 
@@ -180,7 +182,8 @@ fun ReviewGrid(context: Context) {
                     .padding(16.dp)
                     .align(Alignment.BottomEnd)
             ) {
-                Text("+", color = Color.White, fontSize = 36.sp)
+                Text("+", fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.Bold, color = Color.White, fontSize = 36.sp)
             }
         } else {
             // 확대된 이미지 뷰
@@ -292,7 +295,10 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                                 selectPlace = item.id
                                 expanded = false
                             },
-                            text = { Text(text = item.name) }
+                            text = { Text(text = item.name,
+                                fontFamily = pretendardFontFamily,
+                                fontWeight = FontWeight.Normal)
+                            }
                         )
                     }
                 }
@@ -305,7 +311,8 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("만족도", style = MaterialTheme.typography.bodyLarge)
+                Text("만족도", fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.width(8.dp))
                 Slider(
                     value = satisfaction.toFloat(),
@@ -317,7 +324,8 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "$satisfaction",
-                    style = MaterialTheme.typography.bodyLarge,
+                    fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.SemiBold,
                     color = Color.White
                 )
             }
@@ -328,7 +336,9 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
             OutlinedTextField(
                 value = reviewText, // 후기 입력 상태 사용
                 onValueChange = { reviewText = it },
-                placeholder = { Text("후기 작성해주세요") },
+                placeholder = { Text("후기 작성해주세요",
+                    fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.Normal) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp),
@@ -361,7 +371,8 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
                     .clip(RoundedCornerShape(16.dp)),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B1FF))
             ) {
-                Text("업로드", color = Color.White, style = MaterialTheme.typography.bodyMedium)
+                Text("업로드", color = Color.White, fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.SemiBold)
             }
         }
 
@@ -486,7 +497,8 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = thisUser.username,
-                            style = MaterialTheme.typography.bodySmall
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
 
@@ -518,7 +530,8 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                         Spacer(modifier = Modifier.height(0.dp)) // 좋아요 아이콘과 텍스트 간격 설정
                         Text(
                             text = "$recommendCount",
-                            style = MaterialTheme.typography.bodySmall
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
 
@@ -535,7 +548,8 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                         Spacer(modifier = Modifier.height(13.dp)) // 위치 아이콘과 텍스트 간격 설정
                         Text(
                             text = GlobalVariables.placeList[data.place].name, // 위치 정보 제거
-                            style = MaterialTheme.typography.bodySmall
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
                     Spacer(modifier = Modifier.width(20.dp)) // 아이콘 간격 조정
@@ -562,7 +576,8 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                         Spacer(modifier = Modifier.height(1.dp)) // 저장 아이콘과 텍스트 간격 설정
                         Text(
                             text = if (isSaved) "저장됨" else "저장",
-                            style = MaterialTheme.typography.bodySmall
+                            fontFamily = pretendardFontFamily,
+                            fontWeight = FontWeight.Normal
                         )
                     }
                 }
@@ -577,7 +592,8 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                 ) {
                     Text(
                         text = data.text,
-                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center
                     )
                 }

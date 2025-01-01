@@ -83,7 +83,7 @@ fun BoxWithDialog(contactData: ContactData) {
                 text = contactData.name,
                 color = Color.Black,
                 fontFamily = pretendardFontFamily,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp
             )
             Image(
@@ -101,28 +101,30 @@ fun BoxWithDialog(contactData: ContactData) {
             text = {
                 Column(
                     modifier = Modifier
-                        .background(Color(0xFF57B1FF)) // 전체 다이얼로그 배경색
+                        .background(Color.White) // 전체 다이얼로그 배경색
                         .padding(16.dp)
                 ) {
                     // 제목
                     Text(
                         text = contactData.name,
-                        style = MaterialTheme.typography.titleMedium,
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        color = Color.White
+                        color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // 설명
                     Text(
                         text = contactData.text,
-                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Normal,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        color = Color.White
+                        color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -140,7 +142,7 @@ fun BoxWithDialog(contactData: ContactData) {
                                 )
                                 context.startActivity(intent)
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF90CAF9))
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B1FF))
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically // 아이콘과 텍스트 세로 중앙 정렬
@@ -149,12 +151,14 @@ fun BoxWithDialog(contactData: ContactData) {
                                 Text(
                                     text = "🌐", // 웹과 관련된 이모지 사용 (원한다면 수정 가능)
                                     modifier = Modifier.padding(end = 8.dp),
-                                    style = MaterialTheme.typography.bodyMedium
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.Normal
                                 )
                                 // 버튼 텍스트
                                 Text(
                                     text = "Web",
-                                    style = MaterialTheme.typography.bodyMedium
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.Normal
                                 )
                             }
                         }
@@ -168,7 +172,7 @@ fun BoxWithDialog(contactData: ContactData) {
                                 )
                                 context.startActivity(intent)
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF90CAF9))
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B1FF))
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(Icons.Default.Phone, contentDescription = "Tel")
@@ -180,7 +184,7 @@ fun BoxWithDialog(contactData: ContactData) {
                 }
             },
             confirmButton = { /* 생략 가능 */ },
-            containerColor = Color(0xFF57B1FF) // 다이얼로그 기본 배경색
+            containerColor = Color.White // 다이얼로그 기본 배경색
         )
     }
 }

@@ -38,9 +38,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.myapplication_test.utils.pretendardFontFamily
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,7 +91,9 @@ fun LoginScreen(
             TextField(
                 value = userid,
                 onValueChange = { userid = it },
-                label = { Text("아이디 입력") },
+                label = { Text(text="아이디 입력",
+                    fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.Normal) },
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(
                     unfocusedIndicatorColor = Color.Gray,
@@ -105,7 +109,9 @@ fun LoginScreen(
             TextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("비밀번호 입력") },
+                label = { Text(text = "비밀번호 입력",
+                    fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.Normal) },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 colors = TextFieldDefaults.textFieldColors(
@@ -139,7 +145,9 @@ fun LoginScreen(
                     containerColor = Color(0xFF57B1FF)
                 )
             ) {
-                Text("로그인", color = Color.White)
+                Text("로그인", fontFamily = pretendardFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White)
             }
 
             Row(
@@ -149,12 +157,16 @@ fun LoginScreen(
                 TextButton(onClick = { showSignUpDialog = true }) {
                     Text(
                         text = "처음 오셨나요?",
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Normal,
                         color = Color(0xFF1E88E5)
                     )
                 }
                 TextButton(onClick = { showSignUpDialog = true }) {
                     Text(
                         text = "회원 가입하기",
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Normal,
                         color = Color(0xFF1E88E5)
                     )
                 }
@@ -165,7 +177,8 @@ fun LoginScreen(
             // SNS 로그인
             Text(
                 text = "SNS 계정으로 로그인",
-                style = MaterialTheme.typography.bodyMedium,
+                fontFamily = pretendardFontFamily,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
             Row(

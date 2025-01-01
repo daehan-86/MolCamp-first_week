@@ -26,10 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.myapplication_test.page.HomeScreen
 import com.example.myapplication_test.page.ReviewGrid
 import com.example.myapplication_test.page.SettingsScreen
+import com.example.myapplication_test.utils.pretendardFontFamily
 
 
 @Composable
@@ -67,7 +69,9 @@ fun TabLayout(context: Context) {
                                     text = icons[index], // 이모지 표시
                                     modifier = Modifier.padding(end = 8.dp)
                                 )
-                                Text(title)
+                                Text(title,
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.SemiBold)
                             }
                         }
                     )
