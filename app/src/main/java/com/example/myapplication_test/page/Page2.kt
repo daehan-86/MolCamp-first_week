@@ -354,6 +354,7 @@ fun WriteReview(context: Context, onClose: () -> Unit, onUpload: (ReviewData) ->
 fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) {
     val userdata = GlobalVariables.userList[GlobalVariables.userID]
     var isRecommend by remember { mutableStateOf(userdata.recommend.contains(data.id)) }
+    var isSaved by remember { mutableStateOf(userdata.myPlaceList.contains(data.place)) }
     var recommendCount by remember { mutableIntStateOf(data.recommend) }
 
     Dialog(
@@ -395,7 +396,7 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                 // 아이콘 섹션 (프로필, 좋아요, 저장, 위치)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.Center // 구문 수정
                 ) {
                     // 사용자 프로필 및 ID
@@ -416,6 +417,7 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .border(1.dp, Color.White, CircleShape)
+                                .clickable { showUser() }
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -476,14 +478,35 @@ fun ExpandedReview(data: ReviewData, onClose: () -> Unit, showUser: () -> Unit) 
 
                     // 저장 아이콘
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painter = painterResource(id = R.drawable.save_icon), // 업로드한 이미지 파일 참조
-                            contentDescription = "Save Icon",
-                            modifier = Modifier.size(25.dp) // 크기 조정
-                        )
-                        Spacer(modifier = Modifier.height(17.dp)) // 저장 아이콘과 텍스트 간격 설정
+                        IconButton(
+                            onClick = {
+                                isSaved = !isSaved
+                                if (isSaved) {
+                                    userdata.myPlaceList.add(data.place)
+                                } else {
+                                    userdata.myPlaceList.remove(data.place)
+                                }
+                            }
+                        ) {
+                            Icon(
+                                painter = if(isSaved) painterResource(id = R.drawable.save_icon) else painterResource(id = R.drawable.unsave_icon),
+                                contentDescription = "Recommend",
+                                tint = Color.Black,
+                                modifier = Modifier.size(25.dp) // 크기 조정
+                            )
+                        }
+//                        Image(
+//                            painter = painterResource(id = R.drawable.save_icon), // 업로드한 이미지 파일 참조
+//                            contentDescription = "Save Icon",
+//                            modifier = Modifier
+//                                .size(25.dp) // 크기 조정
+//                                .clickable{
+//                                    GlobalVariables.userList[GlobalVariables.userID].myPlaceList.add(data.id)
+//                                }
+//                        )
+                        Spacer(modifier = Modifier.height(1.dp)) // 저장 아이콘과 텍스트 간격 설정
                         Text(
-                            text = "저장",
+                            text = if(isSaved) "저장됨" else "저장",
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
