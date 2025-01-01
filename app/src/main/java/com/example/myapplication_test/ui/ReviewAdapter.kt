@@ -9,10 +9,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.RecyclerView
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -43,49 +47,21 @@ class ReviewAdapter(
                     ),
                     contentDescription = null,
                     contentScale = if (isProfile) ContentScale.Crop else ContentScale.Fit,
-                    modifier = if(isProfile) {
+                    modifier = if (isProfile) {
                         Modifier
-                            .fillMaxWidth()         // 그리드 셀 폭 = match_parent
+                            .fillMaxWidth() // 그리드 셀 폭 = match_parent
                             .aspectRatio(1f)
+                            .padding(8.dp) // 이미지 간격 추가
+                            .clip(RoundedCornerShape(16.dp)) // Corner radius 적용
                             .clickable { onItemClick(data) }
-                    } else{
+                    } else {
                         Modifier
                             .fillMaxSize()
-                            .clickable{onItemClick(data)}
+                            .padding(8.dp) // 이미지 간격 추가
+                            .clip(RoundedCornerShape(16.dp)) // Corner radius 적용
+                            .clickable { onItemClick(data) }
                     }
                 )
-//                if(isProfile){
-//                    Image(
-//                        painter = // 이미지 전환 애니메이션
-//                        rememberAsyncImagePainter(
-//                            ImageRequest.Builder(LocalContext.current).data(data = Uri.fromFile(File(data.image)))
-//                                .apply(block = fun ImageRequest.Builder.() {
-//                                    crossfade(true) // 이미지 전환 애니메이션
-//                                }).build()
-//                        ),
-//                        contentDescription = "Sample Image",
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .aspectRatio(1f) // 정사각형 비율 유지
-//                            .clickable { onItemClick(data) } // 클릭 이벤트 전달
-//                    )
-//                }
-//                else{
-//                    Image(
-//                        painter = // 이미지 전환 애니메이션
-//                        rememberAsyncImagePainter(
-//                            ImageRequest.Builder(LocalContext.current).data(data = Uri.fromFile(File(data.image)))
-//                                .apply(block = fun ImageRequest.Builder.() {
-//                                    crossfade(true) // 이미지 전환 애니메이션
-//                                }).build()
-//                        ),
-//                        contentDescription = "Sample Image",
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .clickable { onItemClick(data) } // 클릭 이벤트 전달
-//                    )
-//                }
             }
         }
     }
@@ -102,3 +78,4 @@ class ReviewAdapter(
 
     override fun getItemCount(): Int = reviews.size
 }
+
