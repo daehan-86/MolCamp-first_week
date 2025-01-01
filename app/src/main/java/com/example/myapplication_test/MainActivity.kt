@@ -12,6 +12,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import com.example.myapplication_test.ui.theme.MyApplication_testTheme
 import com.example.myapplication_test.utils.badgeReload
 import com.example.myapplication_test.utils.loadJson
@@ -19,6 +22,7 @@ import com.example.myapplication_test.utils.parseJson
 import com.example.myapplication_test.utils.saveDrawableToInternalStorage
 import com.example.myapplication_test.utils.saveJson
 import kotlinx.serialization.Serializable
+
 
 object GlobalVariables{
     var userID: Int = -1

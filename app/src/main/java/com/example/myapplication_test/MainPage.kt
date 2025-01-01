@@ -26,10 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.myapplication_test.page.HomeScreen
 import com.example.myapplication_test.page.ReviewGrid
 import com.example.myapplication_test.page.SettingsScreen
+import com.example.myapplication_test.utils.pretendardFontFamily
 
 
 @Composable
@@ -52,7 +54,7 @@ fun TabLayout(context: Context) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 0.dp, vertical = 8.dp),
-                containerColor = Color(0xFF90CAF9), // 배경색 설정
+                containerColor = Color(0xFF57B1FF), // 배경색 설정
                 contentColor = Color.White // 텍스트 및 아이콘 색상
             ) {
                 screens.forEachIndexed { index, title ->
@@ -67,7 +69,9 @@ fun TabLayout(context: Context) {
                                     text = icons[index], // 이모지 표시
                                     modifier = Modifier.padding(end = 8.dp)
                                 )
-                                Text(title)
+                                Text(title,
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.SemiBold)
                             }
                         }
                     )
