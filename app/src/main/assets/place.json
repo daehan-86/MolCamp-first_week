@@ -1,0 +1,152 @@
+[
+  {
+    "id": 0,
+    "name": "해운대",
+    "address": "부산광역시 해운대구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [0]
+  },
+  {
+    "id": 1,
+    "name": "광안리",
+    "address": "부산광역시 해운대구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [0]
+  },
+  {
+    "id": 2,
+    "name": "자갈치",
+    "address": "부산광역시 해운대구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [0]
+  },
+  {
+    "id": 3,
+    "name": "감천 문화",
+    "address": "부산광역시 해운대구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [0]
+  },
+  {
+    "id": 4,
+    "name": "태종대",
+    "address": "대전광역시 어딘가",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [0]
+  },
+  {
+    "id": 5,
+    "name": "성심당",
+    "address": "부산광역시 금정구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [2]
+  },
+  {
+    "id": 6,
+    "name": "엑스포 다리",
+    "address": "부산광역시 금정구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [2]
+  },
+  {
+    "id": 7,
+    "name": "카이스트",
+    "address": "부산광역시 금정구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [2]
+  },
+  {
+    "id": 8,
+    "name": "한밭수목원",
+    "address": "부산광역시 금정구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [2]
+  },
+  {
+    "id": 9,
+    "name": "대청호",
+    "address": "부산광역시 금정구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [2]
+  },
+  {
+    "id": 10,
+    "name": "경복궁",
+    "address": "부산광역시 금정구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [1]
+  },
+  {
+    "id": 11,
+    "name": "남산타워",
+    "address": "부산광역시 금정구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [1]
+  },
+  {
+    "id": 12,
+    "name": "한강공원",
+    "address": "부산광역시 금정구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [1]
+  },
+  {
+    "id": 13,
+    "name": "DDP",
+    "address": "부산광역시 금정구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [1]
+  },
+  {
+    "id": 14,
+    "name": "명동",
+    "address": "부산광역시 금정구",
+    "lat": 0.1,
+    "lon": 0.2,
+    "imageRoot": "",
+    "ratingAvg": 0.0,
+    "badges": [1]
+  }
+]

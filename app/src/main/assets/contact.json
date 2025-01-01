@@ -1,79 +1,74 @@
 [
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 0,
+    "name": "한국관광공사",
+    "text": "한국관광공사는 한국의 관광산업을 육성하고 국내외 관광을 활성화하기 위해 설립된 국가기관으로, 대한민국의 관광 매력을 세계에 알리는 데 주력하고 있습니다.",
+    "tel": "033-738-3000",
+    "website": "https://knto.or.kr/index",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 1,
+    "name": "해운대 구청 문화관광",
+    "text": "해운대 구청 문화관광은 부산 해운대구의 풍부한 자연경관과 문화자원을 바탕으로 관광 명소와 지역 문화를 홍보하며, 관광객들에게 다양한 체험과 편의를 제공하는 역할을 담당합니다.",
+    "tel": "051-749-4000",
+    "website": "https://www.haeundae.go.kr/tour/index.do",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 2,
+    "name": "수영구 구청 문화관광",
+    "text": "String",
+    "tel": "051-610-4000",
+    "website": "https://www.suyeong.go.kr/tour/index.suyeong",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 3,
+    "name": "감천 문화마을",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 4,
+    "name": "태종대 유원지",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 5,
+    "name": "성심당",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 6,
+    "name": "대전엑스포 시민광장",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 7,
+    "name": "한국과학기술원",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   },
   {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
-  },
-  {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
-  },
-  {
-    "title": "한국관광공사",
-    "color": "#000000",
-    "dialogContent": "String",
-    "phoneNumber": "010-1111-1111",
-    "website": "11111111"
+    "id": 8,
+    "name": "한밭수목원",
+    "text": "String",
+    "tel": "010-1111-1111",
+    "website": "11111111",
+    "imageRoot": ""
   }
 ]

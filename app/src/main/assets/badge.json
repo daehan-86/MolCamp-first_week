@@ -1,0 +1,35 @@
+[
+  {
+    "id": 0,
+    "name": "부잘알",
+    "text": "부산을 대표하는 곳을 잘 앎",
+    "bronze": 1,
+    "silver": 2,
+    "gold": 3,
+    "bronzeImageRoot": "busanbronze",
+    "silverImageRoot": "busansilver",
+    "goldImageRoot": "busangold"
+  },
+  {
+    "id": 1,
+    "name": "서잘알",
+    "text": "서울을 대표하는 곳을 잘 앎",
+    "bronze": 1,
+    "silver": 2,
+    "gold": 3,
+    "bronzeImageRoot": "seoulbronze",
+    "silverImageRoot": "seoulsilver",
+    "goldImageRoot": "seoulgold"
+  },
+  {
+    "id": 2,
+    "name": "대잘알",
+    "text": "대전을 대표하는 곳을 잘 앎",
+    "bronze": 1,
+    "silver": 2,
+    "gold": 3,
+    "bronzeImageRoot": "daejeonbronze",
+    "silverImageRoot": "daejeonsilver",
+    "goldImageRoot": "daejeongold"
+  }
+]

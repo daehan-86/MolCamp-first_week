@@ -1,7 +1,9 @@
 package com.example.myapplication_test.page
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,10 +12,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,27 +32,34 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.myapplication_test.contactData
+import androidx.compose.ui.unit.sp
+import com.example.myapplication_test.ContactData
+import com.example.myapplication_test.GlobalVariables
+import com.example.myapplication_test.R
+import com.example.myapplication_test.utils.pretendardFontFamily
 
 // JSON 데이터를 기반으로 박스를 렌더링하는 화면
 @Composable
-fun HomeScreen(data: List<contactData>) {
+fun HomeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(0.dp)
             .verticalScroll(rememberScrollState()) // 스크롤 가능
     ) {
-        data.forEach { contactData ->
+        GlobalVariables.contactList.forEach { contactData ->
             BoxWithDialog(contactData = contactData) // contactData 객체를 전달
         }
     }
 }
 @Composable
-fun BoxWithDialog(contactData: contactData) {
+fun BoxWithDialog(contactData: ContactData) {
     val context = LocalContext.current // Context 가져오기
     var showDialog by remember { mutableStateOf(false) } // 다이얼로그 표시 여부 상태 관리
 
@@ -51,75 +67,124 @@ fun BoxWithDialog(contactData: contactData) {
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
-            .padding(bottom = 10.dp)
-            .background(Color(android.graphics.Color.parseColor(contactData.color)))
+            .padding(bottom = 0.dp)
+            .background(Color(0XFFFFFF)) // Box 배경색 설정
             .clickable { showDialog = true } // 클릭 시 다이얼로그 표시
     ) {
         // 박스에 제목 및 전화번호 표시
-        Column(modifier = Modifier.padding(15.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(15.dp),
+            verticalAlignment = Alignment.CenterVertically, // 세로 방향 중앙 정렬
+            horizontalArrangement = Arrangement.SpaceBetween // 양쪽 끝으로 정렬
+        ) {
             Text(
-                text = contactData.title,
-                color = Color.White,
-                style = MaterialTheme.typography.bodyLarge
+                text = contactData.name,
+                color = Color.Black,
+                fontFamily = pretendardFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 18.sp
             )
-            Text(
-                text = "Tel: ${contactData.phoneNumber}",
-                color = Color.White,
-                style = MaterialTheme.typography.bodySmall
+            Image(
+                painter = painterResource(id = R.drawable.info_img), // drawable의 이미지 리소스 사용
+                contentDescription = "More info image",
+                modifier = Modifier.size(24.dp) // 이미지 크기 설정
             )
         }
     }
 
-    // 다이얼로그 UI
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false }, // 다이얼로그 외부를 클릭하면 닫힘
-            title = { Text(contactData.title) }, // 다이얼로그 제목
+            title = null, // 타이틀 제거
             text = {
-                Column {
-                    Text(contactData.dialogContent) // 다이얼로그 내용 표시
-                    Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
+                Column(
+                    modifier = Modifier
+                        .background(Color.White) // 전체 다이얼로그 배경색
+                        .padding(16.dp)
+                ) {
+                    // 제목
+                    Text(
+                        text = contactData.name,
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // 설명
+                    Text(
+                        text = contactData.text,
+                        fontFamily = pretendardFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // 버튼 영역
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        // 전화번호
-                        Text(
-                            text = "Tel: ${contactData.phoneNumber}",
-                            modifier = Modifier.weight(1f),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        // 전화 버튼
-                        Button(onClick = {
-                            // 다이얼 앱으로 연결
-                            val intent = android.content.Intent(
-                                android.content.Intent.ACTION_DIAL,
-                                android.net.Uri.parse("tel:${contactData.phoneNumber}")
-                            )
-                            context.startActivity(intent) // 다이얼 앱 실행
-                        }) {
-                            Text("Call") // 버튼 텍스트
+                        // 웹 버튼
+                        Button(
+                            onClick = {
+                                val intent = android.content.Intent(
+                                    android.content.Intent.ACTION_VIEW,
+                                    android.net.Uri.parse(contactData.website)
+                                )
+                                context.startActivity(intent)
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B1FF))
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically // 아이콘과 텍스트 세로 중앙 정렬
+                            ) {
+                                // 버튼 아이콘 대체 (문자열 기반 텍스트)
+                                Text(
+                                    text = "🌐", // 웹과 관련된 이모지 사용 (원한다면 수정 가능)
+                                    modifier = Modifier.padding(end = 8.dp),
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.Normal
+                                )
+                                // 버튼 텍스트
+                                Text(
+                                    text = "Web",
+                                    fontFamily = pretendardFontFamily,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            }
                         }
-                    }
-                    Spacer(modifier = Modifier.height(16.dp)) // 간격 추가
-                    // 웹사이트 이동 버튼
-                    Button(onClick = {
-                        // Chrome 앱으로 웹사이트 열기
-                        val intent = android.content.Intent(
-                            android.content.Intent.ACTION_VIEW,
-                            android.net.Uri.parse(contactData.website)
-                        )
-                        context.startActivity(intent) // 웹사이트 이동
-                    }) {
-                        Text("Visit Website") // 버튼 텍스트
+
+                        // 전화 버튼
+                        Button(
+                            onClick = {
+                                val intent = android.content.Intent(
+                                    android.content.Intent.ACTION_DIAL,
+                                    android.net.Uri.parse("tel:${contactData.tel}")
+                                )
+                                context.startActivity(intent)
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF57B1FF))
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.Phone, contentDescription = "Tel")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Tel")
+                            }
+                        }
                     }
                 }
             },
-            confirmButton = {
-                Button(onClick = { showDialog = false }) { // 확인 버튼 클릭 시 닫기
-                    Text("Close")
-                }
-            }
+            confirmButton = { /* 생략 가능 */ },
+            containerColor = Color.White // 다이얼로그 기본 배경색
         )
     }
 }

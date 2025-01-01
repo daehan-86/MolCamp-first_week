@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinx.serialization.plugin)
 }
-
 android {
     namespace = "com.example.myapplication_test"
     compileSdk = 34
@@ -17,6 +16,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -53,6 +53,11 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.io.coil.kt)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.ui) // Compose UI 코어
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.androidx.espresso.web)
+    implementation(libs.play.services.places) // UI 프리뷰
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
